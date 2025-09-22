@@ -11,7 +11,6 @@ export type RegisterBody = {
 export type VerifySignupBody = { email: string; code: string }
 export type LoginBody = { email: string; password: string }
 
-// Sửa lại type cho đúng với backend response
 export type LoginResponse = {
   success: boolean
   message: string

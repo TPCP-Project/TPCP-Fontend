@@ -5,6 +5,10 @@ import { Routes, Route } from 'react-router-dom'
 import Home from '@/pages/Home'
 import About from '@/pages/About'
 import Pricing from '@/pages/Pricing'
+import PaymentSuccess from '@/pages/Payment/PaymentSuccess'
+import PaymentFailed from '@/pages/Payment/PaymentFailed'
+import UploadPage from '@/pages/Dashboard/Upload'
+import Payment from '@/pages/Dashboard/Payment'
 import Contact from '@/pages/Contact'
 import NotFound from '@/pages/NotFound'
 
@@ -56,6 +60,8 @@ export default function AppRoutes() {
           </Layout>
         }
       />
+      <Route path="/payment/success" element={<PaymentSuccess />} />
+      <Route path="/payment/failed" element={<PaymentFailed />} />
       <Route
         path="/contact"
         element={
@@ -82,7 +88,18 @@ export default function AppRoutes() {
           <Route path="chat" element={<Chat />} />
           <Route path="kpi" element={<KPI />} />
           <Route path="ai" element={<AI />} />
+          <Route path="upload" element={<UploadPage />} />
+          <Route path="payment" element={<Payment />} />
         </Route>
+        {/* Pricing page for logged in users */}
+        <Route
+          path="/pricing"
+          element={
+            <Layout>
+              <Pricing />
+            </Layout>
+          }
+        />
       </Route>
 
       {/* 404 */}

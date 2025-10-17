@@ -1,5 +1,5 @@
 // src/pages/Pricing/Pricing.tsx
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Button, Typography, Row, Col, Table, Tag } from 'antd'
 import {
   CheckOutlined,
@@ -7,9 +7,10 @@ import {
   CrownOutlined,
   RocketOutlined,
   StarOutlined,
-  TrophyOutlined,
 } from '@ant-design/icons'
 import styles from './Pricing.module.css'
+import CheckoutButton from '@/components/CheckoutButton'
+import { getSubscriptionStatus } from '@/services/subscriptionService'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -24,6 +25,17 @@ interface Feature {
 }
 
 export default function Pricing() {
+  const [isActive, setIsActive] = useState<boolean | null>(null)
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const s = await getSubscriptionStatus()
+        setIsActive(!!s?.isActive)
+      } catch {
+        setIsActive(false)
+      }
+    })()
+  }, [])
   const plans = [
     {
       name: 'Free',
@@ -31,52 +43,21 @@ export default function Pricing() {
       period: 'miễn phí',
       icon: <StarOutlined />,
       color: 'blue',
-      description: 'Phù hợp cho cá nhân thử nghiệm',
-      features: [
-        'Tạo 1 project',
-        'Mời tối đa 3 thành viên',
-        'Chat nhóm cơ bản',
-        'Tạo task & update trạng thái',
-      ],
+      description: 'Dùng thử cho cá nhân',
+      features: ['1 project', 'Tối đa 3 thành viên', 'Task cơ bản'],
       buttonText: 'Bắt đầu miễn phí',
       popular: false,
     },
     {
       name: 'Pro / Team',
-      price: '300K - 500K',
+      price: '1500K - 3000K',
       period: '/ tháng / team',
       icon: <RocketOutlined />,
       color: 'purple',
-      description: '5-10 users, phù hợp team nhỏ',
-      features: [
-        'Nhiều project (tối đa 10)',
-        'Phân quyền cơ bản',
-        'Gán task, upload file',
-        'Thông báo trễ hạn',
-        'Chat 1-1, search chat',
-        'Email/Slack notification',
-      ],
+      description: 'Nhóm nhỏ 5-10 người',
+      features: ['Nhiều project', 'Phân quyền', 'Upload file', 'Thông báo hạn'],
       buttonText: 'Chọn gói Pro',
       popular: true,
-    },
-    {
-      name: 'Business',
-      price: '1.5M - 3M',
-      period: '/ tháng / team',
-      icon: <TrophyOutlined />,
-      color: 'orange',
-      description: '20+ users, full KPI + AI',
-      features: [
-        'Không giới hạn project',
-        'Phân quyền nâng cao',
-        'Tích hợp API & automation',
-        'KPI & Performance tracking',
-        'AI Chatbot nội bộ',
-        'AI phân tích campaign',
-        'Push/Email notification',
-      ],
-      buttonText: 'Chọn gói Business',
-      popular: false,
     },
     {
       name: 'Enterprise',
@@ -84,16 +65,8 @@ export default function Pricing() {
       period: 'theo nhu cầu',
       icon: <CrownOutlined />,
       color: 'gold',
-      description: 'Hợp đồng năm, triển khai riêng',
-      features: [
-        'Full Admin console',
-        'SSO & User provisioning',
-        'Audit log & báo cáo',
-        'AI tùy chỉnh theo data riêng',
-        'Tích hợp đa kênh',
-        'Hỗ trợ ưu tiên 24/7',
-        'Export KPI tự động',
-      ],
+      description: 'Triển khai riêng cho doanh nghiệp',
+      features: ['SSO', 'Audit log', 'AI theo data riêng', 'Hỗ trợ ưu tiên'],
       buttonText: 'Liên hệ tư vấn',
       popular: false,
     },
@@ -107,14 +80,14 @@ export default function Pricing() {
           name: 'Đăng ký, Đăng nhập, Reset mật khẩu, Update profile',
           free: true,
           pro: true,
-          business: true,
+          business: false,
           enterprise: true,
         },
         {
           name: 'Nâng cấp gói + Quản lý subscription',
           free: false,
           pro: true,
-          business: true,
+          business: false,
           enterprise: true,
         },
         {
@@ -147,7 +120,7 @@ export default function Pricing() {
           name: 'Không giới hạn project, phân quyền nâng cao',
           free: false,
           pro: false,
-          business: true,
+          business: false,
           enterprise: true,
         },
         {
@@ -166,7 +139,7 @@ export default function Pricing() {
           name: 'Tạo task, update trạng thái, bình luận',
           free: true,
           pro: true,
-          business: true,
+          business: false,
           enterprise: true,
         },
         {
@@ -180,14 +153,14 @@ export default function Pricing() {
           name: 'Tích hợp email/slack notification',
           free: false,
           pro: false,
-          business: true,
+          business: false,
           enterprise: true,
         },
         {
           name: 'API mở rộng, automation',
           free: false,
           pro: false,
-          business: true,
+          business: false,
           enterprise: true,
         },
       ],
@@ -304,18 +277,7 @@ export default function Pricing() {
           <CloseOutlined style={{ color: '#d1d5db', fontSize: '18px' }} />
         ),
     },
-    {
-      title: 'Business',
-      dataIndex: 'business',
-      key: 'business',
-      align: 'center' as const,
-      render: (value: boolean, record: Feature) =>
-        record.isCategory ? null : value ? (
-          <CheckOutlined style={{ color: '#10b981', fontSize: '18px' }} />
-        ) : (
-          <CloseOutlined style={{ color: '#d1d5db', fontSize: '18px' }} />
-        ),
-    },
+    // Đã bỏ gói Business khỏi bảng so sánh
     {
       title: 'Enterprise',
       dataIndex: 'enterprise',
@@ -356,7 +318,7 @@ export default function Pricing() {
 
       <Row gutter={[24, 24]} className={styles.plansGrid}>
         {plans.map((plan, index) => (
-          <Col xs={24} sm={12} lg={6} key={index}>
+          <Col xs={24} sm={12} lg={8} key={index}>
             <Card
               className={`${styles.planCard} ${plan.popular ? styles.popular : ''}`}
               bordered={false}
@@ -389,14 +351,24 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <Button
-                type={plan.popular ? 'primary' : 'default'}
-                size="large"
-                block
-                className={styles.planButton}
-              >
-                {plan.buttonText}
-              </Button>
+              {plan.name === 'Pro / Team' ? (
+                isActive ? (
+                  <Button type="default" size="large" block className={styles.planButton} disabled>
+                    Đã kích hoạt Pro
+                  </Button>
+                ) : (
+                  <CheckoutButton />
+                )
+              ) : (
+                <Button
+                  type={plan.popular ? 'primary' : 'default'}
+                  size="large"
+                  block
+                  className={styles.planButton}
+                >
+                  {plan.buttonText}
+                </Button>
+              )}
             </Card>
           </Col>
         ))}

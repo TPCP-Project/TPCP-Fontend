@@ -204,6 +204,15 @@ export default function Projects() {
           >
             <div style={{ marginBottom: 16 }}>
               <Space>
+                {user?.role === 'employee' && (
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => setCreateModalVisible(true)}
+                  >
+                    Tạo Project Mới
+                  </Button>
+                )}
                 <Search
                   placeholder="Tìm kiếm project..."
                   style={{ width: 300 }}

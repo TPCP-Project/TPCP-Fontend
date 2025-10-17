@@ -17,6 +17,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   TrophyOutlined,
+  CreditCardOutlined,
+  UploadOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '@/context/AuthContext'
 import styles from './DashboardLayout.module.css'
@@ -38,6 +40,8 @@ export default function DashboardLayout() {
       { key: '/dashboard/team', icon: <TeamOutlined />, label: 'Nhóm' },
       { key: '/dashboard/chat', icon: <MessageOutlined />, label: 'Trò chuyện' },
       { key: '/dashboard/kpi', icon: <TrophyOutlined />, label: 'KPI' },
+      { key: '/dashboard/upload', icon: <UploadOutlined />, label: 'Upload (Pro)' },
+      { key: '/dashboard/payment', icon: <CreditCardOutlined />, label: 'Thanh toán' },
     ]
 
     if (user?.role === 'admin' || user?.role === 'manager') {

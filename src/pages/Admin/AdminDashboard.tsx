@@ -137,7 +137,10 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                   <span>Hoạt động</span>
                   <span style={{ fontWeight: 600 }}>
-                    {stats?.users.total ? Math.round((stats.users.active / stats.users.total) * 100) : 0}%
+                    {stats?.users.total
+                      ? Math.round((stats.users.active / stats.users.total) * 100)
+                      : 0}
+                    %
                   </span>
                 </div>
                 <div
@@ -162,7 +165,10 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                   <span>Bị Ban</span>
                   <span style={{ fontWeight: 600 }}>
-                    {stats?.users.total ? Math.round((stats.users.banned / stats.users.total) * 100) : 0}%
+                    {stats?.users.total
+                      ? Math.round((stats.users.banned / stats.users.total) * 100)
+                      : 0}
+                    %
                   </span>
                 </div>
                 <div
@@ -193,7 +199,10 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                   <span>Hoàn thành</span>
                   <span style={{ fontWeight: 600 }}>
-                    {stats?.purchases.total ? Math.round((stats.purchases.completed / stats.purchases.total) * 100) : 0}%
+                    {stats?.purchases.total
+                      ? Math.round((stats.purchases.completed / stats.purchases.total) * 100)
+                      : 0}
+                    %
                   </span>
                 </div>
                 <div
@@ -218,7 +227,10 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                   <span>Chờ xử lý</span>
                   <span style={{ fontWeight: 600 }}>
-                    {stats?.purchases.total ? Math.round((stats.purchases.pending / stats.purchases.total) * 100) : 0}%
+                    {stats?.purchases.total
+                      ? Math.round((stats.purchases.pending / stats.purchases.total) * 100)
+                      : 0}
+                    %
                   </span>
                 </div>
                 <div

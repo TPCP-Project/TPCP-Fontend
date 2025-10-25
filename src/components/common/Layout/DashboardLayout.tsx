@@ -37,7 +37,7 @@ export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
 
   const getMenuItems = () => {
-    const baseItems = [
+    let baseItems = [
       { key: '/dashboard', icon: <BarChartOutlined />, label: 'Tổng quan' },
       { key: '/dashboard/projects', icon: <ProjectOutlined />, label: 'Dự án' },
       { key: '/dashboard/tasks', icon: <CheckSquareOutlined />, label: 'Công việc' },
@@ -59,8 +59,8 @@ export default function DashboardLayout() {
 
     // Admin menu
     if (user?.role === 'admin') {
-      baseItems.push(
-        { type: 'divider' },
+      baseItems = [
+        // { type: 'divider' },
         {
           key: '/dashboard/admin',
           icon: <CrownOutlined />,
@@ -80,8 +80,9 @@ export default function DashboardLayout() {
           key: '/dashboard/admin/purchases',
           icon: <ShoppingCartOutlined />,
           label: 'Quản lý Đơn Hàng',
-        }
-      )
+        },
+        { key: '/dashboard/chat', icon: <MessageOutlined />, label: 'Trò chuyện' },
+      ]
     }
 
     return baseItems

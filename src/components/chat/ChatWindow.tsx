@@ -50,10 +50,12 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout>()
 
+  // Cuộn xuống cuối danh sách tin nhắn
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // Lấy tin nhắn của cuộc trò chuyện
   const fetchMessages = useCallback(async () => {
     if (!conversation) return
 
@@ -62,11 +64,11 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
       const response = await chatService.getConversationMessages(conversation._id)
       setMessages(response.data.messages)
 
-      // Mark conversation as read
+      // Đánh dấu đã đọc tin nhắn
       try {
         await chatService.markAsRead(conversation._id)
       } catch (error) {
-        console.warn('Failed to mark as read:', error)
+        console.warn('Không thể đánh dấu đã đọc:', error)
       }
     } catch (error: unknown) {
       const errorMessage = getAxiosErrorMessage(error)
@@ -76,21 +78,23 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     }
   }, [conversation])
 
+  // Lấy danh sách người tham gia
   const fetchParticipants = useCallback(async () => {
     if (!conversation) return
 
     try {
       const response = await chatService.getConversationParticipants(conversation._id)
       setParticipants(response.data.participants)
-      console.log('Conversation participants:', response.data.participants)
+      console.log('Thành viên trong cuộc trò chuyện:', response.data.participants)
     } catch (error: unknown) {
-      console.error('Failed to fetch participants:', error)
+      console.error('Không thể lấy danh sách thành viên:', error)
     }
   }, [conversation])
 
+  // Khi mở một cuộc trò chuyện
   useEffect(() => {
     if (conversation) {
-      console.log('Joining conversation:', conversation._id)
+      console.log('Tham gia phòng chat:', conversation._id)
       fetchMessages()
       fetchParticipants()
       socketService.joinConversation(conversation._id)
@@ -98,42 +102,33 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
 
     return () => {
       if (conversation) {
-        console.log('Leaving conversation:', conversation._id)
+        console.log('Rời phòng chat:', conversation._id)
         socketService.leaveConversation(conversation._id)
       }
     }
   }, [conversation, fetchMessages, fetchParticipants])
 
+  // Tự động cuộn xuống sau mỗi lần có tin nhắn mới
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
-  // Socket event handlers
+  // Xử lý sự kiện socket
   useEffect(() => {
+    // Khi có tin nhắn mới
     const handleNewMessage = (data: { conversationId: string; message: unknown }) => {
-      console.log('Received new message:', data)
-      console.log('Current conversation ID:', conversation?._id)
-      console.log('Message conversation ID:', data.conversationId)
-      console.log('IDs match:', data.conversationId === conversation?._id)
-
+      console.log('Nhận tin nhắn mới:', data)
       if (data.conversationId === conversation?._id) {
         setMessages((prev) => {
           const newMessage = data.message as ChatMessage
-          console.log('Adding new message:', newMessage)
-          // Check if message already exists to avoid duplicates
           const exists = prev.some((msg) => msg._id === newMessage._id)
-          if (exists) {
-            console.log('Message already exists, skipping')
-            return prev
-          }
-          console.log('Adding message to state')
+          if (exists) return prev
           return [...prev, newMessage]
         })
-      } else {
-        console.log('Message not for current conversation, ignoring')
       }
     }
 
+    // Khi người khác đang nhập
     const handleUserTyping = (data: {
       conversationId: string
       userId: string
@@ -145,6 +140,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
       }
     }
 
+    // Khi người khác ngừng nhập
     const handleUserStopTyping = (data: {
       conversationId: string
       userId: string
@@ -152,12 +148,11 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     }) => {
       if (data.conversationId === conversation?._id) {
         setTypingUsers((prev) => prev.filter((id) => id !== data.userId))
-        if (typingUsers.length <= 1) {
-          setShowTyping(false)
-        }
+        if (typingUsers.length <= 1) setShowTyping(false)
       }
     }
 
+    // Khi ai đó thêm reaction
     const handleReactionAdded = (data: {
       conversationId: string
       messageId: string
@@ -186,6 +181,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
       }
     }
 
+    // Khi bỏ reaction
     const handleReactionRemoved = (data: {
       conversationId: string
       messageId: string
@@ -209,30 +205,31 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
       }
     }
 
+    // Khi có người mới vào phòng
     const handleJoinedConversation = (data: {
       conversationId: string
       userId: string
       userName: string
     }) => {
-      console.log('User joined conversation:', data)
+      console.log('Người dùng vào phòng:', data)
       if (data.conversationId === conversation?._id) {
-        // Refresh participants when someone joins
         fetchParticipants()
       }
     }
 
+    // Khi có người rời phòng
     const handleLeftConversation = (data: {
       conversationId: string
       userId: string
       userName: string
     }) => {
-      console.log('User left conversation:', data)
+      console.log('Người dùng rời phòng:', data)
       if (data.conversationId === conversation?._id) {
-        // Refresh participants when someone leaves
         fetchParticipants()
       }
     }
 
+    // Đăng ký sự kiện socket
     socketService.onNewMessage(handleNewMessage)
     socketService.onUserTyping(handleUserTyping)
     socketService.onUserStopTyping(handleUserStopTyping)
@@ -242,6 +239,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     socketService.onLeftConversation(handleLeftConversation)
 
     return () => {
+      // Gỡ event khi rời component
       socketService.offNewMessage()
       socketService.offUserTyping()
       socketService.offUserStopTyping()
@@ -252,20 +250,18 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     }
   }, [conversation, user, typingUsers.length])
 
+  // Gửi tin nhắn
   const handleSendMessage = async () => {
     if (!conversation || !messageText.trim() || sending) return
 
     setSending(true)
     try {
-      console.log('Sending message to conversation:', conversation._id)
       const response = await chatService.sendMessage(conversation._id, {
         content: messageText.trim(),
         message_type: 'text',
       })
-      console.log('Message sent successfully:', response.data)
       setMessageText('')
     } catch (error: unknown) {
-      console.error('Error sending message:', error)
       const errorMessage = getAxiosErrorMessage(error)
       message.error(`Lỗi gửi tin nhắn: ${errorMessage}`)
     } finally {
@@ -273,6 +269,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     }
   }
 
+  // Enter để gửi tin nhắn
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -280,56 +277,56 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     }
   }
 
+  // Emit typing
   const handleTyping = () => {
     if (!conversation) return
 
     socketService.startTyping(conversation._id)
 
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current)
-    }
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
 
     typingTimeoutRef.current = setTimeout(() => {
       socketService.stopTyping(conversation._id)
     }, 1000)
   }
 
+  // Reaction
   const handleReaction = (messageId: string, emoji: string) => {
     socketService.addReaction(messageId, emoji)
   }
 
+  // Trả lời tin nhắn
   const handleReply = (message: ChatMessage) => {
-    // TODO: Implement reply functionality
-    console.log('Reply to message:', message)
+    console.log('Trả lời tin nhắn:', message)
   }
 
+  // Chỉnh sửa tin nhắn
   const handleEdit = (message: ChatMessage) => {
-    // TODO: Implement edit functionality
-    console.log('Edit message:', message)
+    console.log('Sửa tin nhắn:', message)
   }
 
+  // Xoá tin nhắn
   const handleDelete = async (message: ChatMessage) => {
     try {
       await chatService.deleteMessage(message._id)
       setMessages((prev) => prev.filter((msg) => msg._id !== message._id))
     } catch (error: unknown) {
       const errorMessage = getAxiosErrorMessage(error)
-      console.error('Delete message error:', errorMessage)
+      console.error('Lỗi xoá tin nhắn:', errorMessage)
     }
   }
 
+  // Tiêu đề cuộc trò chuyện
   const getConversationTitle = () => {
     if (!conversation) return 'Chọn cuộc trò chuyện'
-
-    if (conversation.type === 'project') {
-      return conversation.project_id?.name || conversation.name
-    }
-    return conversation.name
+    return conversation.type === 'project'
+      ? conversation.project_id?.name || conversation.name
+      : conversation.name
   }
 
+  // Subtitle – loại và số thành viên
   const getConversationSubtitle = () => {
     if (!conversation) return ''
-
     if (conversation.type === 'project') {
       const participantCount = participants.length || conversation.stats.total_participants || 0
       return `${participantCount} thành viên`
@@ -339,11 +336,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
 
   const getConversationAvatar = () => {
     if (!conversation) return null
-
-    if (conversation.avatar?.url) {
-      return conversation.avatar.url
-    }
-    return conversation.type === 'project' ? undefined : undefined
+    return conversation.avatar?.url || undefined
   }
 
   const getConversationIcon = () => {
@@ -351,6 +344,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     return conversation.type === 'project' ? <TeamOutlined /> : <UserOutlined />
   }
 
+  // Menu hành động (tìm kiếm, gọi điện,...)
   const getActionMenu = () => (
     <Menu>
       <Menu.Item key="search" icon={<SearchOutlined />}>
@@ -365,6 +359,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
     </Menu>
   )
 
+  // Nếu chưa chọn cuộc trò chuyện
   if (!conversation) {
     return (
       <Card
@@ -383,7 +378,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
+      {/* Header – Thông tin hội thoại */}
       <div
         style={{
           padding: '16px',
@@ -413,7 +408,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
         </div>
 
         <Space>
-          <Tooltip title="Tìm kiếm">
+          <Tooltip title="Tìm kiếm trong cuộc trò chuyện">
             <Button type="text" icon={<SearchOutlined />} />
           </Tooltip>
           <Tooltip title="Gọi điện">
@@ -428,7 +423,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
         </Space>
       </div>
 
-      {/* Messages */}
+      {/* Khu vực tin nhắn */}
       <div
         style={{
           flex: 1,
@@ -459,7 +454,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
               />
             ))}
 
-            {/* Typing indicator */}
+            {/* Hiển thị "đang nhập" */}
             {showTyping && typingUsers.length > 0 && (
               <div
                 style={{
@@ -473,13 +468,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
                   maxWidth: 'fit-content',
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '2px',
-                    animation: 'typing 1.4s infinite',
-                  }}
-                >
+                <div style={{ display: 'flex', gap: '2px' }}>
                   <div
                     style={{
                       width: '6px',
@@ -518,7 +507,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
         )}
       </div>
 
-      {/* Message Input */}
+      {/* Input gửi tin nhắn */}
       <div
         style={{
           padding: '16px',
@@ -528,6 +517,7 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
       >
         <Space.Compact style={{ width: '100%' }}>
           <Button type="text" icon={<PaperClipOutlined />} title="Đính kèm file" />
+
           <TextArea
             value={messageText}
             onChange={(e) => {
@@ -539,7 +529,9 @@ export default function ChatWindow({ conversation, onBack }: ChatWindowProps) {
             autoSize={{ minRows: 1, maxRows: 4 }}
             style={{ flex: 1 }}
           />
+
           <Button type="text" icon={<SmileOutlined />} title="Emoji" />
+
           <Button
             type="primary"
             icon={<SendOutlined />}

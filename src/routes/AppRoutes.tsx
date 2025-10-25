@@ -101,8 +101,7 @@ export default function AppRoutes() {
           <Route path="ai" element={<AI />} />
           <Route path="upload" element={<UploadPage />} />
           <Route path="payment" element={<Payment />} />
-
-          {/* Admin routes */}
+          / Admin routes /
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="admin/users" element={<UserManagement />} />
           <Route path="admin/packages" element={<PackageManagement />} />

@@ -1,7 +1,7 @@
 import { http } from './httpClient'
 import { ApiResponse } from './api'
 
-// =================== INTERFACES ===================
+// INTERFACES
 
 export interface User {
   _id: string
@@ -65,7 +65,12 @@ export interface Purchase {
 
 export interface AdminNotification {
   _id: string
-  type: 'new_purchase' | 'user_registration' | 'system_alert' | 'payment_failed' | 'subscription_expired'
+  type:
+    | 'new_purchase'
+    | 'user_registration'
+    | 'system_alert'
+    | 'payment_failed'
+    | 'subscription_expired'
   title: string
   message: string
   relatedUser?: User
@@ -95,10 +100,10 @@ export interface DashboardStats {
   }
 }
 
-// =================== ADMIN SERVICE ===================
+//  ADMIN SERVICE
 
 export const adminService = {
-  // =================== USER MANAGEMENT ===================
+  //  USER MANAGEMENT
 
   getAllUsers: async (params?: {
     page?: number
@@ -106,12 +111,14 @@ export const adminService = {
     role?: string
     accountStatus?: string
     search?: string
-  }): Promise<ApiResponse<{ users: User[], total: number, page: number, pages: number }>> => {
+  }): Promise<ApiResponse<{ users: User[]; total: number; page: number; pages: number }>> => {
     const response = await http.get('/api/admin/users', { params })
     return response.data
   },
 
-  getUserDetails: async (userId: string): Promise<ApiResponse<{ user: User, purchases: Purchase[] }>> => {
+  getUserDetails: async (
+    userId: string
+  ): Promise<ApiResponse<{ user: User; purchases: Purchase[] }>> => {
     const response = await http.get(`/api/admin/users/${userId}`)
     return response.data
   },
@@ -121,29 +128,47 @@ export const adminService = {
     return response.data
   },
 
-  banUser: async (userId: string, ban: boolean, reason?: string): Promise<ApiResponse<{ user: User }>> => {
+  banUser: async (
+    userId: string,
+    ban: boolean,
+    reason?: string
+  ): Promise<ApiResponse<{ user: User }>> => {
     const response = await http.put(`/api/admin/users/${userId}/ban`, { ban, reason })
     return response.data
   },
 
-  sendWarningEmail: async (userId: string, subject: string, message: string): Promise<ApiResponse<void>> => {
-    const response = await http.post(`/api/admin/users/${userId}/send-warning`, { subject, message })
+  sendWarningEmail: async (
+    userId: string,
+    subject: string,
+    message: string
+  ): Promise<ApiResponse<void>> => {
+    const response = await http.post(`/api/admin/users/${userId}/send-warning`, {
+      subject,
+      message,
+    })
     return response.data
   },
 
   // =================== PACKAGE MANAGEMENT ===================
 
-  createPackage: async (packageData: Partial<SubscriptionPackage>): Promise<ApiResponse<{ package: SubscriptionPackage }>> => {
+  createPackage: async (
+    packageData: Partial<SubscriptionPackage>
+  ): Promise<ApiResponse<{ package: SubscriptionPackage }>> => {
     const response = await http.post('/api/admin/packages', packageData)
     return response.data
   },
 
-  getAllPackages: async (params?: { isActive?: boolean }): Promise<ApiResponse<{ packages: SubscriptionPackage[] }>> => {
+  getAllPackages: async (params?: {
+    isActive?: boolean
+  }): Promise<ApiResponse<{ packages: SubscriptionPackage[] }>> => {
     const response = await http.get('/api/admin/packages', { params })
     return response.data
   },
 
-  updatePackage: async (packageId: string, updates: Partial<SubscriptionPackage>): Promise<ApiResponse<{ package: SubscriptionPackage }>> => {
+  updatePackage: async (
+    packageId: string,
+    updates: Partial<SubscriptionPackage>
+  ): Promise<ApiResponse<{ package: SubscriptionPackage }>> => {
     const response = await http.put(`/api/admin/packages/${packageId}`, updates)
     return response.data
   },
@@ -160,12 +185,18 @@ export const adminService = {
     limit?: number
     status?: string
     userId?: string
-  }): Promise<ApiResponse<{ purchases: Purchase[], total: number, page: number, pages: number }>> => {
+  }): Promise<
+    ApiResponse<{ purchases: Purchase[]; total: number; page: number; pages: number }>
+  > => {
     const response = await http.get('/api/admin/purchases', { params })
     return response.data
   },
 
-  updatePurchaseStatus: async (purchaseId: string, status: string, notes?: string): Promise<ApiResponse<{ purchase: Purchase }>> => {
+  updatePurchaseStatus: async (
+    purchaseId: string,
+    status: string,
+    notes?: string
+  ): Promise<ApiResponse<{ purchase: Purchase }>> => {
     const response = await http.put(`/api/admin/purchases/${purchaseId}/status`, { status, notes })
     return response.data
   },
@@ -176,12 +207,22 @@ export const adminService = {
     page?: number
     limit?: number
     isRead?: boolean
-  }): Promise<ApiResponse<{ notifications: AdminNotification[], total: number, unreadCount: number, page: number, pages: number }>> => {
+  }): Promise<
+    ApiResponse<{
+      notifications: AdminNotification[]
+      total: number
+      unreadCount: number
+      page: number
+      pages: number
+    }>
+  > => {
     const response = await http.get('/api/admin/notifications', { params })
     return response.data
   },
 
-  markNotificationAsRead: async (notificationId: string): Promise<ApiResponse<{ notification: AdminNotification }>> => {
+  markNotificationAsRead: async (
+    notificationId: string
+  ): Promise<ApiResponse<{ notification: AdminNotification }>> => {
     const response = await http.put(`/api/admin/notifications/${notificationId}/read`)
     return response.data
   },

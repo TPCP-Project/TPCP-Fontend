@@ -40,7 +40,9 @@ export default function PackageManagement() {
       const res = await adminService.getAllPackages()
       setPackages(res.data.packages)
     } catch (error: any) {
-      message.error('Không thể tải danh sách gói: ' + (error.response?.data?.message || error.message))
+      message.error(
+        'Không thể tải danh sách gói: ' + (error.response?.data?.message || error.message)
+      )
     } finally {
       setLoading(false)
     }
@@ -135,7 +137,8 @@ export default function PackageManagement() {
       title: 'Thời hạn',
       dataIndex: 'duration',
       key: 'duration',
-      render: (duration) => `${duration.value} ${duration.unit === 'months' ? 'tháng' : duration.unit === 'years' ? 'năm' : 'ngày'}`,
+      render: (duration) =>
+        `${duration.value} ${duration.unit === 'months' ? 'tháng' : duration.unit === 'years' ? 'năm' : 'ngày'}`,
     },
     {
       title: 'Giới hạn',
@@ -162,11 +165,7 @@ export default function PackageManagement() {
       key: 'actions',
       render: (_, record) => (
         <Space>
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal(record)}
-          >
+          <Button type="text" icon={<EditOutlined />} onClick={() => openEditModal(record)}>
             Sửa
           </Button>
           <Popconfirm

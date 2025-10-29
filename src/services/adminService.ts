@@ -149,7 +149,7 @@ export const adminService = {
     return response.data
   },
 
-  // =================== PACKAGE MANAGEMENT ===================
+  // PACKAGE MANAGEMENT
 
   createPackage: async (
     packageData: Partial<SubscriptionPackage>

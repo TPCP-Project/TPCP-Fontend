@@ -6,19 +6,22 @@ import UpdateTaskModal from '../components/modals/EditTaskModal'
 import AssignEmployeeModal from '../components/modals/AssignEmployeeModal'
 import CommentCard from '../components/CommentCard'
 import AttachmentUploader from '../components/AttachmentUploader'
-import { useAuth } from '@/context/AuthContext' // ✅ thêm dòng này
+import { useAuth } from '@/context/AuthContext' 
+
 
 interface TaskDetailProps {
   taskId: string
   onBack: () => void
 }
 
+
 export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
   const [task, setTask] = useState<Task | null>(null)
   const [loading, setLoading] = useState(true)
   const [updateVisible, setUpdateVisible] = useState(false)
   const [assignVisible, setAssignVisible] = useState(false)
-  const { user } = useAuth() // ✅ lấy thông tin user đăng nhập
+  const { user } = useAuth() 
+
 
   const fetchTaskDetail = async () => {
     setLoading(true)
@@ -71,6 +74,7 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
       </div>
     )
   }
+
 
   if (!task) {
     return (
@@ -140,6 +144,7 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
         </Descriptions>
       </Card>
 
+
       {/* 💬 Bình luận & 📎 File song song */}
       <Row gutter={16}>
         <Col xs={24} md={12}>
@@ -168,6 +173,7 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
           }}
         />
       )}
+
 
       {/* 👥 Modal gán nhân viên */}
       {task && (

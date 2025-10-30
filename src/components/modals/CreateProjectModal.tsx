@@ -3,11 +3,13 @@ import { Modal, Form, Input, Switch, Button, message } from 'antd'
 import { projectService, CreateProjectRequest } from '@/services/projectService'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 
+
 interface CreateProjectModalProps {
   visible: boolean
   onCancel: () => void
   onSuccess: () => void
 }
+
 
 export default function CreateProjectModal({
   visible,
@@ -31,7 +33,9 @@ export default function CreateProjectModal({
     } finally {
       setLoading(false)
     }
+
   }
+
 
   return (
     <Modal title="Tạo Project Mới" open={visible} onCancel={onCancel} footer={null} width={600}>
@@ -110,4 +114,6 @@ export default function CreateProjectModal({
       </Form>
     </Modal>
   )
+
 }
+

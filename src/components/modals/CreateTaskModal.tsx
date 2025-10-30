@@ -19,7 +19,6 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
   const [loadingMembers, setLoadingMembers] = useState(false)
   const [form] = Form.useForm<CreateTaskRequest>()
 
-  // 🟢 Load danh sách dự án theo user token
   const fetchProjects = async () => {
     setLoadingProjects(true)
     try {
@@ -33,7 +32,6 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
     }
   }
 
-  // 🟢 Load danh sách members khi chọn project
   const fetchProjectMembers = async (projectId: string) => {
     if (!projectId) {
       console.warn('No projectId provided')
@@ -53,7 +51,6 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
       const membersData = res?.data?.members || []
       console.log('Setting members:', membersData)
 
-      // Debug each member structure
       if (membersData.length > 0) {
         console.log('First member structure:', JSON.stringify(membersData[0], null, 2))
         console.log('user_id type:', typeof membersData[0].user_id)
@@ -71,7 +68,6 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
     }
   }
 
-  // Handle project change
   const handleProjectChange = (projectId: string) => {
     console.log('Project changed to:', projectId)
     try {
@@ -84,11 +80,10 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
   useEffect(() => {
     if (visible) {
       fetchProjects()
-      setMembers([]) // Reset members khi mở modal
+      setMembers([]) 
     }
   }, [visible])
 
-  // 🟢 Tạo task mới
   const handleSubmit = async (values: CreateTaskRequest) => {
     setLoading(true)
     try {
@@ -171,7 +166,6 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
                 console.log(`  - user_id:`, m.user_id, typeof m.user_id)
                 console.log(`  - user._id:`, m.user?._id, typeof m.user?._id)
 
-                // Ensure all values are strings
                 const userId = m.user_id || m.user?._id || ''
                 const userIdString = typeof userId === 'object' ? String(userId._id || userId) : String(userId)
                 const userName = m.user?.name || ''

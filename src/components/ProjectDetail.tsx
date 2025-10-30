@@ -8,11 +8,14 @@ import ProjectJoinRequests from '@/components/ProjectJoinRequests'
 import ProjectMembers from '@/components/ProjectMembers'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 
+
 interface ProjectDetailProps {
   projectId: string
   defaultTab?: string
   onBack: () => void
 }
+
+
 
 export default function ProjectDetail({
   projectId,
@@ -23,6 +26,7 @@ export default function ProjectDetail({
   const [loading, setLoading] = useState(true)
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [activeTab, setActiveTab] = useState(defaultTab)
+
 
   const fetchProjectDetail = useCallback(async () => {
     setLoading(true)
@@ -35,6 +39,7 @@ export default function ProjectDetail({
     } finally {
       setLoading(false)
     }
+
   }, [projectId])
 
   useEffect(() => {
@@ -54,7 +59,9 @@ export default function ProjectDetail({
       const errorMessage = getAxiosErrorMessage(error)
       message.error(errorMessage)
     }
+
   }
+
 
   const getStatusTag = (status: string) => {
     const statusConfig = {
@@ -67,7 +74,9 @@ export default function ProjectDetail({
       text: status,
     }
     return <Tag color={config.color}>{config.text}</Tag>
+
   }
+
 
   if (loading) {
     return (
@@ -75,7 +84,9 @@ export default function ProjectDetail({
         <Spin size="large" />
       </div>
     )
+
   }
+
 
   if (!project) {
     return (
@@ -86,7 +97,9 @@ export default function ProjectDetail({
         </div>
       </Card>
     )
+
   }
+
 
   return (
     <div>
@@ -205,5 +218,8 @@ export default function ProjectDetail({
         }}
       />
     </div>
+    
   )
+
 }
+

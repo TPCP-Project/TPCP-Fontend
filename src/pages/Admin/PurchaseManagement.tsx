@@ -35,7 +35,9 @@ export default function PurchaseManagement() {
       setPurchases(res.data.purchases)
       setTotal(res.data.total)
     } catch (error: any) {
-      message.error('Không thể tải danh sách đơn hàng: ' + (error.response?.data?.message || error.message))
+      message.error(
+        'Không thể tải danh sách đơn hàng: ' + (error.response?.data?.message || error.message)
+      )
     } finally {
       setLoading(false)
     }

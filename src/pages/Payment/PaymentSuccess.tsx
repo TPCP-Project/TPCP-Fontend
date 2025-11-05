@@ -24,7 +24,10 @@ export default function PaymentSuccess() {
       <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
         <Spin size="large" />
       </div>
+      
     )
+
+
 
   if (!status?.isActive) {
     return (
@@ -39,7 +42,9 @@ export default function PaymentSuccess() {
         }
       />
     )
+
   }
+
 
   return (
     <Card style={{ maxWidth: 640, margin: '24px auto' }}>
@@ -69,4 +74,5 @@ export default function PaymentSuccess() {
       />
     </Card>
   )
+
 }

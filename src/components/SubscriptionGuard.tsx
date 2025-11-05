@@ -7,14 +7,17 @@ interface SubscriptionGuardProps {
   children: React.ReactElement
 }
 
+
 export default function SubscriptionGuard({ children }: SubscriptionGuardProps) {
   const [loading, setLoading] = useState(true)
   const [isActive, setIsActive] = useState(false)
   const [subscriptionPlan, setSubscriptionPlan] = useState<string | null>(null)
 
+
   useEffect(() => {
     checkSubscription()
   }, [])
+
 
   const checkSubscription = async () => {
     try {
@@ -27,7 +30,9 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
     } finally {
       setLoading(false)
     }
+
   }
+
 
   if (loading) {
     return (
@@ -41,8 +46,12 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
       >
         <Spin size="large" tip="Đang kiểm tra gói đăng ký..." />
       </div>
+
     )
+
+
   }
+
 
   if (!isActive) {
     return (
@@ -66,6 +75,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
               </Button>,
             ]}
           >
+
             <div style={{ marginTop: 24 }}>
               <h4>Các tính năng Pro bao gồm:</h4>
               <ul style={{ textAlign: 'left', display: 'inline-block' }}>
@@ -82,5 +92,7 @@ export default function SubscriptionGuard({ children }: SubscriptionGuardProps) 
     )
   }
 
+
   return children
+
 }

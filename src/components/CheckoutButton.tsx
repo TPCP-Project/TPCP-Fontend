@@ -11,10 +11,8 @@ export default function CheckoutButton() {
     try {
       setLoading(true)
 
-      // Gọi API tạo payment - KHÔNG cần truyền customerInfo
       const result = await createPayment()
 
-      // Redirect đến VNPay
       window.location.href = result.paymentUrl
     } catch (error: unknown) {
       const errorMessage =
@@ -46,6 +44,7 @@ export default function CheckoutButton() {
     }
   }
 
+
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <Button
@@ -67,6 +66,7 @@ export default function CheckoutButton() {
         {loading ? 'Đang xử lý...' : 'Thanh toán VNPay (1.5M VNĐ)'}
       </Button>
 
+
       {/* Mock Payment - CHỈ HIỆN KHI DEVELOPMENT */}
       {import.meta.env.DEV && (
         <Button
@@ -86,4 +86,5 @@ export default function CheckoutButton() {
       )}
     </Space>
   )
+  
 }

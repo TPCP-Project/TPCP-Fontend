@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           colorPrimary: '#7C3AED',
           borderRadius: 12,
           fontFamily:
-            'Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif',
+            'Quicksand, sans-serif',
         },
         components: {
           Button: { controlHeight: 44, fontWeight: 600 },

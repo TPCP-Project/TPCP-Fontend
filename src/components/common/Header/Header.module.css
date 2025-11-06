@@ -33,9 +33,13 @@
 }
 
 .logo {
-  height: 40px; /* Tăng kích thước logo */
-  width: auto;
-  transition: transform 0.3s ease;
+  font-size: 1.75rem;       /* cỡ chữ lớn như logo */
+  font-weight: 700;         /* đậm */
+  background: linear-gradient(90deg, #4f46e5, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
 }
 
 .logo:hover {

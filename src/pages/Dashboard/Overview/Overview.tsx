@@ -73,6 +73,20 @@ export default function Overview() {
           </Card>
         </Col>
       </Row>
+      <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+        <Col xs={24} lg={24}>
+          <Card
+            title={<span className={styles.cardTitle}>Thống kê</span>}
+            className={styles.largeCard}
+            bordered={false}
+          >
+            <div className={styles.emptyState}>
+              <ProjectOutlined className={styles.emptyIcon} />
+              <Text className={styles.emptyText}>Chưa có thống kê nào</Text>
+            </div>
+          </Card> 
+        </Col>
+      </Row>
     </div>
   )
 }

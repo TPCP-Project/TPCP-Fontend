@@ -1,1 +1,9 @@
-.wrapper{min-height:100vh;display:grid;grid-template-rows:auto 1fr auto} .main{padding:24px}
+.wrapper {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+.main {
+  padding: 0;     
+  width: 100%;    
+}

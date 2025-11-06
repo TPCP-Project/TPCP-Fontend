@@ -32,7 +32,7 @@ export default function Header() {
         <nav className={styles.nav}>
           {/* Logo */}
           <Link to="/" className={styles.logoLink}>
-            <img src="/src/assets/images/logo.png" alt="AI Chatbot" className={styles.logo} />
+            <span className={styles.logo}>AI Chatbot</span>
           </Link>
 
           {/* Desktop Nav Links */}

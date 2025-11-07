@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Descriptions, Tag, Button, Space, Spin, message, Row, Col } from 'antd'
-import {
-  ArrowLeftOutlined,
-  EditOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons'
+import { ArrowLeftOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons'
 import { Task, taskService } from '../services/taskService'
 import UpdateTaskModal from '../components/modals/EditTaskModal'
 import AssignEmployeeModal from '../components/modals/AssignEmployeeModal'
 import CommentCard from '../components/CommentCard'
 import AttachmentUploader from '../components/AttachmentUploader'
+import { useAuth } from '@/context/AuthContext' // ✅ thêm dòng này
 
 interface TaskDetailProps {
   taskId: string
@@ -21,6 +18,7 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
   const [loading, setLoading] = useState(true)
   const [updateVisible, setUpdateVisible] = useState(false)
   const [assignVisible, setAssignVisible] = useState(false)
+  const { user } = useAuth() // ✅ lấy thông tin user đăng nhập
 
   const fetchTaskDetail = async () => {
     setLoading(true)
@@ -99,23 +97,28 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
         }
         extra={
           <Space>
-            <Button
-              icon={<UserAddOutlined />}
-              onClick={() => setAssignVisible(true)}
-            >
-              Assign Member
-            </Button>
+            {/* ✅ Ẩn hai nút này nếu role không phải manager */}
+            {user?.role === 'manager' && (
+              <>
+                <Button
+                  icon={<UserAddOutlined />}
+                  onClick={() => setAssignVisible(true)}
+                >
+                  Assign Member
+                </Button>
 
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => {
-                if (task?._id) setUpdateVisible(true)
-                else message.warning('Task chưa sẵn sàng để chỉnh sửa!')
-              }}
-            >
-              Chỉnh sửa
-            </Button>
+                <Button
+                  type="primary"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    if (task?._id) setUpdateVisible(true)
+                    else message.warning('Task chưa sẵn sàng để chỉnh sửa!')
+                  }}
+                >
+                  Chỉnh sửa
+                </Button>
+              </>
+            )}
           </Space>
         }
       >
@@ -138,7 +141,7 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
       </Card>
 
       {/* 💬 Bình luận & 📎 File song song */}
-      <Row gutter={16} >
+      <Row gutter={16}>
         <Col xs={24} md={12}>
           {task?._id && <CommentCard taskId={task._id} />}
         </Col>

@@ -22,6 +22,7 @@ import DashboardLayout from '@/components/common/Layout/DashboardLayout'
 import Overview from '@/pages/Dashboard/Overview/Overview'
 import Projects from '@/pages/Dashboard/Projects'
 import Tasks from '@/pages/Dashboard/Tasks'
+import KanbanView from '@/pages/Dashboard/KanbanView'
 import Team from '@/pages/Dashboard/Team'
 import Chat from '@/pages/Dashboard/Chat'
 import KPI from '@/pages/Dashboard/KPI'
@@ -84,6 +85,7 @@ export default function AppRoutes() {
           <Route index element={<Overview />} />
           <Route path="projects" element={<Projects />} />
           <Route path="tasks" element={<Tasks />} />
+          <Route path="kanban" element={<KanbanView />} />
           <Route path="team" element={<Team />} />
           <Route path="chat" element={<Chat />} />
           <Route path="kpi" element={<KPI />} />

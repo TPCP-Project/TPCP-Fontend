@@ -24,7 +24,7 @@ export default function CommentCard({ taskId }: { taskId: string }) {
   const [newComment, setNewComment] = useState('')
   const [posting, setPosting] = useState(false)
 
-  // 🟢 Lấy danh sách bình luận
+  // Lấy danh sách bình luận
   const fetchComments = async () => {
     try {
       setLoading(true)
@@ -37,7 +37,7 @@ export default function CommentCard({ taskId }: { taskId: string }) {
     }
   }
 
-  // 🟡 Gửi bình luận mới
+  // Gửi bình luận mới
   const handleAddComment = async () => {
     if (!newComment.trim()) {
       return message.warning('Vui lòng nhập nội dung bình luận')
@@ -59,7 +59,7 @@ export default function CommentCard({ taskId }: { taskId: string }) {
     if (taskId) fetchComments()
   }, [taskId])
 
-  // 🎨 Màu role
+  // Màu role
   const getRoleColor = (role: string) => {
     switch (role.toLowerCase()) {
       case 'manager':
@@ -73,7 +73,7 @@ export default function CommentCard({ taskId }: { taskId: string }) {
     }
   }
 
-  // 🧠 Viết hoa chữ cái đầu
+  // Viết hoa chữ cái đầu
   const capitalize = (text?: string) => {
     if (!text) return ''
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()

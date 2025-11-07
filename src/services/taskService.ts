@@ -2,12 +2,14 @@
 import { http } from './httpClient'
 import { Dayjs } from 'dayjs'
 
+/* Interface & Kiểu dữ liệu Task */
 export interface Task {
-  dueDate?: string | Dayjs | null
+  task: Task
   _id: string
   title: string
   description?: string
   status: 'In_Progress' | 'Blocked' | 'Done'
+  dueDate?: string | Dayjs | null
   projectId?: string | { _id: string; name: string }
   createdBy: { _id: string; username?: string; email: string }
   assignedTo?: { _id: string; username?: string; email: string }
@@ -15,19 +17,21 @@ export interface Task {
   updatedAt: string
 }
 
+/* DTO: Request tạo & cập nhật Task */
 export interface CreateTaskRequest {
   title: string
   description?: string
   projectId: string
   status?: 'In_Progress' | 'Blocked' | 'Done'
+  dueDate?: string
 }
 
 export interface UpdateTaskRequest {
   title?: string
   description?: string
+  projectId?: string
   dueDate?: string
   status?: 'In_Progress' | 'Blocked' | 'Done'
-  projectId?: string
 }
 
 export const taskService = {
@@ -45,20 +49,29 @@ export const taskService = {
     return res.data.task
   },
 
-  // Tạo task mới
+  // Create New Task
   createTask: async (data: CreateTaskRequest): Promise<Task> => {
     const res = await http.post('/api/tasks', data)
+    // backend trả về { success: true, task: {...} }
     return res.data.task
   },
 
-  // Cập nhật task
+  // Update Task
   updateTask: async (taskId: string, data: UpdateTaskRequest): Promise<Task> => {
     const res = await http.put(`/api/tasks/${taskId}`, data)
+    // backend trả về { success: true, task: {...} }
     return res.data.task
   },
 
-  // Xóa task
+  // Delete Task
   deleteTask: async (taskId: string): Promise<void> => {
     await http.delete(`/api/tasks/${taskId}`)
+  },
+
+  // Assign Task to User
+  assignTask: async (taskId: string, userId: string): Promise<Task> => {
+    const res = await http.put(`/api/tasks/${taskId}/assign`, { userId })
+    // backend trả về { success: true, task: {...} }
+    return res.data.task
   },
 }

@@ -2,17 +2,33 @@
 import { http } from './httpClient'
 import { Dayjs } from 'dayjs'
 
-/* Interface & Kiểu dữ liệu Task */
+
+
+export type TaskStatus = 'TO_DO' | 'DRAFTING' | 'IN_REVIEW' | 'APPROVED' | 'BLOCKED'
+export type TaskPriority = 'Low' | 'Medium' | 'High' | 'Urgent'
+
+export interface Subtask {
+  _id: string
+  title: string
+  completed: boolean
+}
+
 export interface Task {
-  task: Task
   _id: string
   title: string
   description?: string
-  status: 'In_Progress' | 'Blocked' | 'Done'
-  dueDate?: string | Dayjs | null
+  status: TaskStatus
+  priority: TaskPriority
+  sprint?: string
+  labels?: string[]
+  subtasks: Subtask[]
+
   projectId?: string | { _id: string; name: string }
   createdBy: { _id: string; username?: string; email: string }
   assignedTo?: { _id: string; username?: string; email: string }
+  dueDate?: string | Dayjs | null
+  completedAt?: string
+  isOverdue: boolean
   createdAt: string
   updatedAt: string
 }
@@ -22,7 +38,15 @@ export interface CreateTaskRequest {
   title: string
   description?: string
   projectId: string
+
   status?: 'In_Progress' | 'Blocked' | 'Done'
+
+  assignedTo: string
+  status?: TaskStatus
+  priority?: TaskPriority
+  sprint?: string
+  labels?: string[]
+
   dueDate?: string
 }
 
@@ -31,7 +55,22 @@ export interface UpdateTaskRequest {
   description?: string
   projectId?: string
   dueDate?: string
+
   status?: 'In_Progress' | 'Blocked' | 'Done'
+
+  status?: TaskStatus
+  priority?: TaskPriority
+  sprint?: string
+  labels?: string[]
+  projectId?: string
+}
+
+export interface BoardColumns {
+  TO_DO: Task[]
+  DRAFTING: Task[]
+  IN_REVIEW: Task[]
+  APPROVED: Task[]
+  BLOCKED: Task[]
 }
 
 export const taskService = {
@@ -68,10 +107,40 @@ export const taskService = {
     await http.delete(`/api/tasks/${taskId}`)
   },
 
+
   // Assign Task to User
   assignTask: async (taskId: string, userId: string): Promise<Task> => {
     const res = await http.put(`/api/tasks/${taskId}/assign`, { userId })
     // backend trả về { success: true, task: {...} }
+  // Lấy tasks theo board (Kanban)
+  getTasksByBoard: async (projectId: string, sprint?: string): Promise<BoardColumns> => {
+    const params = sprint ? { sprint } : {}
+    const res = await http.get(`/api/tasks/board/${projectId}`, { params })
+    return res.data.columns
+  },
+
+  // Cập nhật status task (drag & drop)
+  updateTaskStatus: async (taskId: string, status: TaskStatus): Promise<Task> => {
+    const res = await http.put(`/api/tasks/${taskId}/status`, { status })
+    return res.data.task
+  },
+
+  // Thêm subtask
+  addSubtask: async (taskId: string, title: string): Promise<Task> => {
+    const res = await http.post(`/api/tasks/${taskId}/subtasks`, { title })
+    return res.data.task
+  },
+
+  // Cập nhật subtask
+  updateSubtask: async (taskId: string, subtaskId: string, data: { title?: string; completed?: boolean }): Promise<Task> => {
+    const res = await http.put(`/api/tasks/${taskId}/subtasks/${subtaskId}`, data)
+    return res.data.task
+  },
+
+  // Xóa subtask
+  deleteSubtask: async (taskId: string, subtaskId: string): Promise<Task> => {
+    const res = await http.delete(`/api/tasks/${taskId}/subtasks/${subtaskId}`)
+
     return res.data.task
   },
 }

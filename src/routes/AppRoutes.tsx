@@ -5,6 +5,10 @@ import { Routes, Route } from 'react-router-dom'
 import Home from '@/pages/Home'
 import About from '@/pages/About'
 import Pricing from '@/pages/Pricing'
+import PaymentSuccess from '@/pages/Payment/PaymentSuccess'
+import PaymentFailed from '@/pages/Payment/PaymentFailed'
+import UploadPage from '@/pages/Dashboard/Upload'
+import Payment from '@/pages/Dashboard/Payment'
 import Contact from '@/pages/Contact'
 import NotFound from '@/pages/NotFound'
 
@@ -18,6 +22,7 @@ import DashboardLayout from '@/components/common/Layout/DashboardLayout'
 import Overview from '@/pages/Dashboard/Overview/Overview'
 import Projects from '@/pages/Dashboard/Projects'
 import Tasks from '@/pages/Dashboard/Tasks'
+import KanbanView from '@/pages/Dashboard/KanbanView'
 import Team from '@/pages/Dashboard/Team'
 import Chat from '@/pages/Dashboard/Chat'
 import KPI from '@/pages/Dashboard/KPI'
@@ -56,6 +61,8 @@ export default function AppRoutes() {
           </Layout>
         }
       />
+      <Route path="/payment/success" element={<PaymentSuccess />} />
+      <Route path="/payment/failed" element={<PaymentFailed />} />
       <Route
         path="/contact"
         element={
@@ -78,11 +85,23 @@ export default function AppRoutes() {
           <Route index element={<Overview />} />
           <Route path="projects" element={<Projects />} />
           <Route path="tasks" element={<Tasks />} />
+          <Route path="kanban" element={<KanbanView />} />
           <Route path="team" element={<Team />} />
           <Route path="chat" element={<Chat />} />
           <Route path="kpi" element={<KPI />} />
           <Route path="ai" element={<AI />} />
+          <Route path="upload" element={<UploadPage />} />
+          <Route path="payment" element={<Payment />} />
         </Route>
+        {/* Pricing page for logged in users */}
+        <Route
+          path="/pricing"
+          element={
+            <Layout>
+              <Pricing />
+            </Layout>
+          }
+        />
       </Route>
 
       {/* 404 */}

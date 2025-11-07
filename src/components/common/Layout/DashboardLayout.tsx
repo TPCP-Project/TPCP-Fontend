@@ -19,6 +19,7 @@ import {
   TrophyOutlined,
   CreditCardOutlined,
   UploadOutlined,
+  AppstoreOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '@/context/AuthContext'
 import styles from './DashboardLayout.module.css'
@@ -37,6 +38,7 @@ export default function DashboardLayout() {
       { key: '/dashboard', icon: <BarChartOutlined />, label: 'Tổng quan' },
       { key: '/dashboard/projects', icon: <ProjectOutlined />, label: 'Dự án' },
       { key: '/dashboard/tasks', icon: <CheckSquareOutlined />, label: 'Công việc' },
+      { key: '/dashboard/kanban', icon: <AppstoreOutlined />, label: 'Kanban Board' },
       { key: '/dashboard/team', icon: <TeamOutlined />, label: 'Nhóm' },
       { key: '/dashboard/chat', icon: <MessageOutlined />, label: 'Trò chuyện' },
       { key: '/dashboard/kpi', icon: <TrophyOutlined />, label: 'KPI' },

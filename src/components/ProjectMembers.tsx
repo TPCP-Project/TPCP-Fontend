@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, Table, Tag, Avatar, Space, message, Button, Popconfirm } from 'antd'
-import { UserOutlined, CrownOutlined, SettingOutlined, UserDeleteOutlined } from '@ant-design/icons'
+import { Card, Table, Tag, Avatar, Space, message, Button, Popconfirm, Tooltip } from 'antd'
+import { UserOutlined, CrownOutlined, SettingOutlined, UserDeleteOutlined, MessageOutlined } from '@ant-design/icons'
 import { projectService, ProjectMember } from '@/services/projectService'
+import { chatService } from '@/services/chatService'
 import { getAxiosErrorMessage } from '@/utils/httpError'
+import { useNavigate } from 'react-router-dom'
 
 interface ProjectMembersProps {
   projectId: string
@@ -10,6 +12,7 @@ interface ProjectMembersProps {
 }
 
 export default function ProjectMembers({ projectId, projectName }: ProjectMembersProps) {
+  const navigate = useNavigate()
   const [members, setMembers] = useState<ProjectMember[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -62,6 +65,28 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
     }
   }
 
+  const handleCreateChat = async (member: ProjectMember) => {
+    try {
+      message.loading({ content: 'Đang tạo cuộc trò chuyện...', key: 'createChat' })
+
+      // Create or get existing direct conversation
+      const response = await chatService.createDirectConversation({
+        targetUserId: member.user._id
+      })
+
+      message.success({ content: 'Đã tạo cuộc trò chuyện!', key: 'createChat' })
+
+      // Navigate to chat page with the conversation
+      navigate('/dashboard/chat', { state: { conversationId: response.data._id } })
+    } catch (error: unknown) {
+      const errorMessage = getAxiosErrorMessage(error)
+      message.error({
+        content: 'Lỗi: ' + errorMessage,
+        key: 'createChat'
+      })
+    }
+  }
+
   const columns = [
     {
       title: 'Thành viên',
@@ -93,6 +118,17 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
       key: 'actions',
       render: (_: unknown, record: ProjectMember) => (
         <Space>
+          <Tooltip title="Nhắn tin 1vs1">
+            <Button
+              type="text"
+              icon={<MessageOutlined />}
+              size="small"
+              onClick={() => handleCreateChat(record)}
+            >
+              Chat
+            </Button>
+          </Tooltip>
+
           {record.role !== 'owner' && (
             <Popconfirm
               title={`Bạn có chắc chắn muốn xóa ${record.user.name} khỏi project?`}

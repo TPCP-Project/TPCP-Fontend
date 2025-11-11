@@ -28,6 +28,15 @@ import Chat from '@/pages/Dashboard/Chat'
 import KPI from '@/pages/Dashboard/KPI'
 import AI from '@/pages/Dashboard/AI'
 
+// Admin pages
+import AdminDashboard from '@/pages/Admin/AdminDashboard'
+import UserManagement from '@/pages/Admin/UserManagement'
+import PackageManagement from '@/pages/Admin/PackageManagement'
+import PurchaseManagement from '@/pages/Admin/PurchaseManagement'
+
+// Project Join page
+import JoinProject from '@/pages/JoinProject/JoinProject'
+
 // Layout Components
 import Layout from '@/components/common/Layout'
 import PublicRoute from './PublicRoute'
@@ -92,7 +101,17 @@ export default function AppRoutes() {
           <Route path="ai" element={<AI />} />
           <Route path="upload" element={<UploadPage />} />
           <Route path="payment" element={<Payment />} />
+
+          {/* Admin routes */}
+          <Route path="admin" element={<AdminDashboard />} />
+          <Route path="admin/users" element={<UserManagement />} />
+          <Route path="admin/packages" element={<PackageManagement />} />
+          <Route path="admin/purchases" element={<PurchaseManagement />} />
         </Route>
+
+        {/* Join project page (outside DashboardLayout for full-page experience) */}
+        <Route path="/projects/join" element={<JoinProject />} />
+
         {/* Pricing page for logged in users */}
         <Route
           path="/pricing"

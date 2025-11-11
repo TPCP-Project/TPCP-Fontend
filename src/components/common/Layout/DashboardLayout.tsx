@@ -20,6 +20,9 @@ import {
   CreditCardOutlined,
   UploadOutlined,
   AppstoreOutlined,
+  CrownOutlined,
+  ShoppingCartOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '@/context/AuthContext'
 import styles from './DashboardLayout.module.css'
@@ -52,6 +55,33 @@ export default function DashboardLayout() {
         icon: <RobotOutlined />,
         label: 'AI Assistant',
       })
+    }
+
+    // Admin menu
+    if (user?.role === 'admin') {
+      baseItems.push(
+        { type: 'divider' },
+        {
+          key: '/dashboard/admin',
+          icon: <CrownOutlined />,
+          label: 'Admin Dashboard',
+        },
+        {
+          key: '/dashboard/admin/users',
+          icon: <UsergroupAddOutlined />,
+          label: 'Quản lý Users',
+        },
+        {
+          key: '/dashboard/admin/packages',
+          icon: <CreditCardOutlined />,
+          label: 'Quản lý Gói',
+        },
+        {
+          key: '/dashboard/admin/purchases',
+          icon: <ShoppingCartOutlined />,
+          label: 'Quản lý Đơn Hàng',
+        }
+      )
     }
 
     return baseItems

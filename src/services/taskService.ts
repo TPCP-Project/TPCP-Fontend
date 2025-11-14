@@ -13,6 +13,17 @@ export interface Subtask {
   completed: boolean
 }
 
+export interface Attachment {
+  _id: string
+  filename: string
+  originalName: string
+  url: string
+  size: number
+  mimetype: string
+  uploadedBy: { _id: string; username?: string; email: string }
+  uploadedAt: string
+}
+
 export interface Task {
   _id: string
   title: string
@@ -22,6 +33,7 @@ export interface Task {
   sprint?: string
   labels?: string[]
   subtasks: Subtask[]
+  attachments?: Attachment[]
 
   projectId?: string | { _id: string; name: string }
   createdBy: { _id: string; username?: string; email: string }
@@ -112,6 +124,9 @@ export const taskService = {
   assignTask: async (taskId: string, userId: string): Promise<Task> => {
     const res = await http.put(`/api/tasks/${taskId}/assign`, { userId })
     // backend trả về { success: true, task: {...} }
+    return res.data.task
+  },
+
   // Lấy tasks theo board (Kanban)
   getTasksByBoard: async (projectId: string, sprint?: string): Promise<BoardColumns> => {
     const params = sprint ? { sprint } : {}
@@ -140,7 +155,24 @@ export const taskService = {
   // Xóa subtask
   deleteSubtask: async (taskId: string, subtaskId: string): Promise<Task> => {
     const res = await http.delete(`/api/tasks/${taskId}/subtasks/${subtaskId}`)
+    return res.data.task
+  },
 
+  // Upload attachment
+  uploadAttachment: async (taskId: string, file: File): Promise<Task> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await http.post(`/api/tasks/${taskId}/attachments`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return res.data.task
+  },
+
+  // Xóa attachment
+  deleteAttachment: async (taskId: string, attachmentId: string): Promise<Task> => {
+    const res = await http.delete(`/api/tasks/${taskId}/attachments/${attachmentId}`)
     return res.data.task
   },
 }

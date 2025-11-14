@@ -6,35 +6,46 @@ import {
   FileOutlined,
   EyeOutlined
 } from '@ant-design/icons'
+import { Attachment, taskService } from '../services/taskService'
 
-export default function AttachmentUploader() {
-  // 🧩 Dữ liệu file demo tạm
-  const [files, setFiles] = useState([
-    {
-      _id: '1',
-      name: 'report_kpi_thang11.pdf',
-      size: 245000,
-      uploadedAt: '2025-11-06T14:25:00Z'
-    },
-    {
-      _id: '2',
-      name: 'design_ui_homepage.png',
-      size: 56000,
-      uploadedAt: '2025-11-05T10:18:00Z'
-    }
-  ])
+interface AttachmentUploaderProps {
+  taskId: string
+  attachments?: Attachment[]
+  onUploadSuccess: () => void
+}
 
-  // 🧠 Giả lập upload (chưa gọi API)
+export default function AttachmentUploader({ taskId, attachments = [], onUploadSuccess }: AttachmentUploaderProps) {
+  const [uploading, setUploading] = useState(false)
+
+  // 🧠 Upload file thật
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleUpload = (options: any) => {
-    const { file } = options
-    message.success(`File "${file.name}" đã được tải lên (demo)`)
+  const handleUpload = async (options: any) => {
+    const { file, onSuccess, onError } = options
+    setUploading(true)
+    try {
+      await taskService.uploadAttachment(taskId, file)
+      message.success(`File "${file.name}" đã được tải lên`)
+      onSuccess?.()
+      onUploadSuccess() // Refresh task data
+    } catch (error) {
+      console.error('Upload error:', error)
+      message.error('Không thể upload file!')
+      onError?.(error)
+    } finally {
+      setUploading(false)
+    }
   }
 
-  // 🧠 Giả lập xóa
-  const handleDelete = (fileId: string) => {
-    setFiles((prev) => prev.filter((f) => f._id !== fileId))
-    message.info('Đã xóa file (demo)')
+  // 🧠 Xóa file thật
+  const handleDelete = async (attachmentId: string) => {
+    try {
+      await taskService.deleteAttachment(taskId, attachmentId)
+      message.success('Đã xóa file')
+      onUploadSuccess() // Refresh task data
+    } catch (error) {
+      console.error('Delete error:', error)
+      message.error('Không thể xóa file!')
+    }
   }
 
   // 🧮 Format kích thước file
@@ -42,6 +53,12 @@ export default function AttachmentUploader() {
     if (size < 1024) return `${size} B`
     if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`
     return `${(size / 1024 / 1024).toFixed(1)} MB`
+  }
+
+  // Mở file trong tab mới
+  const handleView = (url: string) => {
+    const fullUrl = url.startsWith('http') ? url : `http://localhost:4000${url}`
+    window.open(fullUrl, '_blank')
   }
 
   return (
@@ -52,7 +69,7 @@ export default function AttachmentUploader() {
     >
       {/* 🟢 Nút upload */}
       <Upload customRequest={handleUpload} showUploadList={false}>
-        <Button type="primary" icon={<UploadOutlined />}>
+        <Button type="primary" icon={<UploadOutlined />} loading={uploading}>
           Tải file lên
         </Button>
       </Upload>
@@ -61,7 +78,7 @@ export default function AttachmentUploader() {
       <List
         style={{ marginTop: 16 }}
         bordered
-        dataSource={files}
+        dataSource={attachments}
         locale={{ emptyText: 'Chưa có file nào' }}
         renderItem={(file) => (
           <List.Item
@@ -71,7 +88,7 @@ export default function AttachmentUploader() {
                 type="text"
                 size="small"
                 icon={<EyeOutlined />}
-                onClick={() => message.info(`Xem file: ${file.name}`)}
+                onClick={() => handleView(file.url)}
               />,
               <Popconfirm
                 key="delete"
@@ -91,7 +108,7 @@ export default function AttachmentUploader() {
           >
             <List.Item.Meta
               avatar={<FileOutlined style={{ fontSize: 20, color: '#1677ff' }} />}
-              title={<span style={{ fontWeight: 500 }}>{file.name}</span>}
+              title={<span style={{ fontWeight: 500 }}>{file.originalName}</span>}
               description={
                 <>
                   <span style={{ color: '#888' }}>{formatSize(file.size)}</span>{' '}
@@ -99,6 +116,12 @@ export default function AttachmentUploader() {
                   <span style={{ color: '#aaa' }}>
                     {new Date(file.uploadedAt).toLocaleString('vi-VN')}
                   </span>
+                  {file.uploadedBy?.username && (
+                    <>
+                      {' • '}
+                      <span style={{ color: '#666' }}>Bởi {file.uploadedBy.username}</span>
+                    </>
+                  )}
                 </>
               }
             />

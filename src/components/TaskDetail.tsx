@@ -146,7 +146,13 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
           {task?._id && <CommentCard taskId={task._id} />}
         </Col>
         <Col xs={24} md={12}>
-          <AttachmentUploader />
+          {task?._id && (
+            <AttachmentUploader
+              taskId={task._id}
+              attachments={task.attachments || []}
+              onUploadSuccess={fetchTaskDetail}
+            />
+          )}
         </Col>
       </Row>
 

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Descriptions, Tag, Button, Space, Spin, message } from 'antd'
-import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons'
+import { Card, Descriptions, Tag, Button, Space, Spin, message, Row, Col } from 'antd'
+import { ArrowLeftOutlined, EditOutlined, UserAddOutlined } from '@ant-design/icons'
 import { Task, taskService } from '../services/taskService'
-import UpdateTaskModal from '../components/modals/EditTaskModal' // import modal update
+import UpdateTaskModal from '../components/modals/EditTaskModal'
+import AssignEmployeeModal from '../components/modals/AssignEmployeeModal'
+import CommentCard from '../components/CommentCard'
+import AttachmentUploader from '../components/AttachmentUploader'
+import { useAuth } from '@/context/AuthContext' // ✅ thêm dòng này
 
 interface TaskDetailProps {
   taskId: string
@@ -13,15 +17,17 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
   const [task, setTask] = useState<Task | null>(null)
   const [loading, setLoading] = useState(true)
   const [updateVisible, setUpdateVisible] = useState(false)
+  const [assignVisible, setAssignVisible] = useState(false)
+  const { user } = useAuth() // ✅ lấy thông tin user đăng nhập
 
-  // 🟢 Lấy chi tiết task
   const fetchTaskDetail = async () => {
     setLoading(true)
     try {
-      const data = await taskService.getTaskById(taskId)
+      const res = await taskService.getTaskById(taskId)
+      const data = res?.task || res
       setTask(data)
     } catch (err) {
-      console.error(err)
+      console.error('❌ Lỗi tải chi tiết công việc:', err)
       message.error('Không thể tải chi tiết công việc!')
     } finally {
       setLoading(false)
@@ -29,22 +35,33 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
   }
 
   useEffect(() => {
-    fetchTaskDetail()
+    if (taskId) fetchTaskDetail()
   }, [taskId])
 
-  // 🟢 Render tag trạng thái
   const getStatusTag = (status: Task['status']) => {
-    const map: Record<Task['status'], string> = {
+    const label: Record<Task['status'], string> = {
       In_Progress: 'Đang làm',
       Blocked: 'Bị chặn',
       Done: 'Hoàn thành',
     }
-    const colorMap: Record<Task['status'], string> = {
+    const color: Record<Task['status'], string> = {
       In_Progress: 'orange',
       Blocked: 'red',
       Done: 'green',
     }
-    return <Tag color={colorMap[status]}>{map[status]}</Tag>
+    return <Tag color={color[status]}>{label[status]}</Tag>
+  }
+
+  const handleAssignEmployee = async (userId: string) => {
+    if (!task) return
+    try {
+      await taskService.assignTask(task._id, userId)
+      message.success('Đã gán nhân viên thành công!')
+      fetchTaskDetail()
+    } catch (error) {
+      console.error('❌ Lỗi khi gán nhân viên:', error)
+      message.error('Không thể gán nhân viên!')
+    }
   }
 
   if (loading) {
@@ -68,6 +85,7 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
 
   return (
     <>
+      {/* 🧾 Chi tiết công việc */}
       <Card
         title={
           <Space>
@@ -78,13 +96,30 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
           </Space>
         }
         extra={
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => setUpdateVisible(true)}
-          >
-            Chỉnh sửa
-          </Button>
+          <Space>
+            {/* ✅ Ẩn hai nút này nếu role không phải manager */}
+            {user?.role === 'manager' && (
+              <>
+                <Button
+                  icon={<UserAddOutlined />}
+                  onClick={() => setAssignVisible(true)}
+                >
+                  Assign Member
+                </Button>
+
+                <Button
+                  type="primary"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    if (task?._id) setUpdateVisible(true)
+                    else message.warning('Task chưa sẵn sàng để chỉnh sửa!')
+                  }}
+                >
+                  Chỉnh sửa
+                </Button>
+              </>
+            )}
+          </Space>
         }
       >
         <Descriptions column={1} bordered>
@@ -92,14 +127,10 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
           <Descriptions.Item label="Mô tả">{task.description || '—'}</Descriptions.Item>
           <Descriptions.Item label="Trạng thái">{getStatusTag(task.status)}</Descriptions.Item>
           <Descriptions.Item label="Dự án">
-            {typeof task.projectId === 'object' ? task.projectId?.name || '—' : '—'}
+            {typeof task.projectId === 'object' ? task.projectId?.name : '—'}
           </Descriptions.Item>
-          <Descriptions.Item label="Người tạo">
-            {task.createdBy?.username || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label="Người được giao">
-            {task.assignedTo?.username || '—'}
-          </Descriptions.Item>
+          <Descriptions.Item label="Người tạo">{task.createdBy?.username || '—'}</Descriptions.Item>
+          <Descriptions.Item label="Người được giao">{task.assignedTo?.username || 'Chưa có'}</Descriptions.Item>
           <Descriptions.Item label="Ngày tạo">
             {new Date(task.createdAt).toLocaleString('vi-VN')}
           </Descriptions.Item>
@@ -109,16 +140,42 @@ export default function TaskDetail({ taskId, onBack }: TaskDetailProps) {
         </Descriptions>
       </Card>
 
-      {/* 🟢 Modal cập nhật công việc */}
-      <UpdateTaskModal
-        visible={updateVisible}
-        taskId={task._id}
-        onClose={() => setUpdateVisible(false)}
-        onUpdated={() => {
-          setUpdateVisible(false)
-          fetchTaskDetail() // reload sau khi cập nhật
-        }}
-      />
+      {/* 💬 Bình luận & 📎 File song song */}
+      <Row gutter={16}>
+        <Col xs={24} md={12}>
+          {task?._id && <CommentCard taskId={task._id} />}
+        </Col>
+        <Col xs={24} md={12}>
+          <AttachmentUploader />
+        </Col>
+      </Row>
+
+      {/* 🛠 Modal chỉnh sửa */}
+      {task?._id && (
+        <UpdateTaskModal
+          visible={updateVisible}
+          taskId={task._id}
+          onClose={() => setUpdateVisible(false)}
+          onUpdated={() => {
+            setUpdateVisible(false)
+            fetchTaskDetail()
+          }}
+        />
+      )}
+
+      {/* 👥 Modal gán nhân viên */}
+      {task && (
+        <AssignEmployeeModal
+          visible={assignVisible}
+          projectId={
+            (typeof task.projectId === 'object'
+              ? task.projectId?._id
+              : task.projectId) || ''
+          }
+          onClose={() => setAssignVisible(false)}
+          onAssign={handleAssignEmployee}
+        />
+      )}
     </>
   )
 }

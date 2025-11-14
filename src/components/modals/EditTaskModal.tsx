@@ -1,156 +1,113 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Modal, Form, Input, Select, Button, message, Spin, DatePicker } from 'antd'
+import { Modal, Form, Input, Select, DatePicker, message, Spin } from 'antd'
 import dayjs from 'dayjs'
-import { taskService, UpdateTaskRequest } from '../../services/taskService'
-import { projectService, Project } from '../../services/projectService'
-
-interface UpdateTaskModalProps {
-  visible: boolean
-  taskId: string | null
-  onClose: () => void
-  onUpdated?: () => void
-}
+import { taskService } from '../../services/taskService'
 
 const { Option } = Select
 
-export default function UpdateTaskModal({
+interface EditTaskModalProps {
+  visible: boolean
+  taskId: string
+  onClose: () => void
+  onUpdated: () => void
+}
+
+export default function EditTaskModal({
   visible,
   taskId,
   onClose,
   onUpdated,
-}: UpdateTaskModalProps) {
-  const [form] = Form.useForm<UpdateTaskRequest>()
+}: EditTaskModalProps) {
+  const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
-  const [loadingTask, setLoadingTask] = useState(false)
-  const [projects, setProjects] = useState<Project[]>([])
-  const [loadingProjects, setLoadingProjects] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
-  // 🟢 Load danh sách dự án
-  const fetchProjects = async () => {
-    setLoadingProjects(true)
-    try {
-      const res = await projectService.getProjects({ status: 'active', page: 1, limit: 100 })
-      setProjects(res.data.projects || [])
-    } catch (err) {
-      console.error('Lỗi tải danh sách dự án:', err)
-      message.error('Không thể tải danh sách dự án!')
-    } finally {
-      setLoadingProjects(false)
-    }
-  }
-
-  // 🟢 Lấy dữ liệu task theo ID
-  const fetchTask = async (id: string) => {
-    setLoadingTask(true)
-    try {
-      const task = await taskService.getTaskById(id)
-      form.setFieldsValue({
-        title: task.title,
-        description: task.description,
-        dueDate: task.dueDate ? dayjs(task.dueDate).toISOString() : undefined,
-        status: task.status,
-        projectId: typeof task.projectId === 'string' ? task.projectId : task.projectId?._id,
-      })
-    } catch (err) {
-      console.error('Lỗi tải công việc:', err)
-      message.error('Không thể tải dữ liệu công việc!')
-    } finally {
-      setLoadingTask(false)
-    }
-  }
-
+  // Lấy thông tin chi tiết Task để fill vào form
   useEffect(() => {
-    if (visible && taskId) {
-      fetchProjects()
-      fetchTask(taskId)
-    } else {
-      form.resetFields()
+    if (!visible || !taskId) return
+    const fetchDetail = async () => {
+      setLoading(true)
+      try {
+        const res = await taskService.getTaskById(taskId)
+        const taskData = res?.task || res
+
+        form.setFieldsValue({
+          title: taskData.title,
+          description: taskData.description,
+          status: taskData.status,
+          dueDate: taskData.dueDate ? dayjs(taskData.dueDate) : null, // ✅ hiển thị ngày
+        })
+      } catch (err) {
+        console.error('Lỗi tải task:', err)
+        message.error('Không thể tải thông tin công việc!')
+      } finally {
+        setLoading(false)
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchDetail()
   }, [visible, taskId])
 
-  // 🟢 Submit cập nhật task
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSubmit = async (values: any) => {
-    if (!taskId) return
-    setLoading(true)
-    try {
-      const payload: UpdateTaskRequest = {
-        title: values.title,
-        description: values.description,
-        dueDate: values.dueDate ? values.dueDate.toISOString() : undefined,
-        status: values.status,
-        projectId: values.projectId,
-      }
+  // Xử lý cập nhật task
+  async function handleSubmit(values: any) {
+    if (!taskId) {
+      message.error('Thiếu ID công việc!')
+      return
+    }
 
+    const payload = {
+      ...values,
+      // Convert dayjs → ISO string để backend đọc được
+      dueDate: values.dueDate ? values.dueDate.toISOString() : null,
+    }
+
+    try {
+      setSubmitting(true)
       await taskService.updateTask(taskId, payload)
       message.success('Cập nhật công việc thành công!')
-      form.resetFields()
-      onUpdated?.()
-      onClose()
-    } catch (err: unknown) {
+      onUpdated() // gọi callback để reload lại TaskDetail
+    } catch (err) {
       console.error('Lỗi cập nhật công việc:', err)
-
-      if (axios.isAxiosError(err)) {
-        message.error(err.response?.data?.message || 'Cập nhật công việc thất bại!')
-      } else {
-        message.error('Cập nhật công việc thất bại!')
-      }
+      message.error('Không thể cập nhật công việc!')
     } finally {
-      setLoading(false)
+      setSubmitting(false)
     }
   }
 
   return (
     <Modal
-      title="Cập nhật công việc"
-      visible={visible}
+      title="Chỉnh sửa công việc"
+      open={visible}
       onCancel={onClose}
-      footer={null}
+      onOk={() => form.submit()} 
+      okText="Lưu thay đổi"
+      cancelText="Hủy"
+      confirmLoading={submitting}
       destroyOnClose
     >
-      {loadingTask ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: 20 }}>
           <Spin />
         </div>
       ) : (
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit} 
+        >
           <Form.Item
-            label="Tên công việc"
             name="title"
-            rules={[{ required: true, message: 'Vui lòng nhập tên công việc' }]}
+            label="Tên công việc"
+            rules={[{ required: true, message: 'Vui lòng nhập tên công việc!' }]}
           >
             <Input placeholder="Nhập tên công việc" />
           </Form.Item>
 
-          <Form.Item label="Mô tả" name="description">
-            <Input.TextArea placeholder="Nhập mô tả (tùy chọn)" rows={4} />
+          <Form.Item name="description" label="Mô tả">
+            <Input.TextArea rows={3} placeholder="Nhập mô tả" />
           </Form.Item>
 
-          <Form.Item label="Hạn hoàn thành" name="dueDate">
-            <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />
-          </Form.Item>
-
-          <Form.Item
-            label="Dự án"
-            name="projectId"
-            rules={[{ required: true, message: 'Vui lòng chọn dự án' }]}
-          >
-            {loadingProjects ? (
-              <Spin />
-            ) : (
-              <Select placeholder="Chọn dự án">
-                {projects.map((p) => (
-                  <Option key={p._id} value={p._id}>
-                    {p.name}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-
-          <Form.Item label="Trạng thái" name="status">
+          <Form.Item name="status" label="Trạng thái">
             <Select>
               <Option value="In_Progress">Đang làm</Option>
               <Option value="Blocked">Bị chặn</Option>
@@ -158,10 +115,14 @@ export default function UpdateTaskModal({
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block>
-              Cập nhật công việc
-            </Button>
+          {/* Thêm thời gian hoàn thành */}
+          <Form.Item name="dueDate" label="Thời hạn hoàn thành">
+            <DatePicker
+              showTime
+              format="DD/MM/YYYY HH:mm"
+              style={{ width: '100%' }}
+              placeholder="Chọn thời gian hoàn thành"
+            />
           </Form.Item>
         </Form>
       )}

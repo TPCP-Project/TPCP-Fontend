@@ -33,20 +33,29 @@ const { TextArea } = Input
 export default function UserManagement() {
   const { message } = App.useApp()
   const navigate = useNavigate()
+
+  // Danh sách user
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)
+
+  // Phân trang
   const [page, setPage] = useState(1)
   const [limit] = useState(20)
+
+  // Bộ lọc
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<string>('')
   const [statusFilter, setStatusFilter] = useState<string>('')
 
-  // Modals
+  // Modal
   const [roleModalVisible, setRoleModalVisible] = useState(false)
   const [emailModalVisible, setEmailModalVisible] = useState(false)
+
+  // User đang chọn
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
+  // Form
   const [roleForm] = Form.useForm()
   const [emailForm] = Form.useForm()
 
@@ -54,9 +63,11 @@ export default function UserManagement() {
     fetchUsers()
   }, [page, search, roleFilter, statusFilter])
 
+  // Lấy danh sách tất cả user từ server
   const fetchUsers = async () => {
     try {
       setLoading(true)
+
       const params: any = { page, limit }
       if (search) params.search = search
       if (roleFilter) params.role = roleFilter
@@ -66,12 +77,15 @@ export default function UserManagement() {
       setUsers(res.data.users)
       setTotal(res.data.total)
     } catch (error: any) {
-      message.error('Không thể tải danh sách users: ' + (error.response?.data?.message || error.message))
+      message.error(
+        'Không thể tải danh sách users: ' + (error.response?.data?.message || error.message)
+      )
     } finally {
       setLoading(false)
     }
   }
 
+  // Cập nhật role user
   const handleUpdateRole = async (values: any) => {
     if (!selectedUser) return
 
@@ -86,6 +100,7 @@ export default function UserManagement() {
     }
   }
 
+  // Ban hoặc unban user
   const handleBanUser = async (user: User, ban: boolean) => {
     try {
       const reason = ban ? 'Vi phạm chính sách sử dụng' : undefined
@@ -97,6 +112,7 @@ export default function UserManagement() {
     }
   }
 
+  // Gửi email cảnh báo
   const handleSendEmail = async (values: any) => {
     if (!selectedUser) return
 
@@ -110,27 +126,28 @@ export default function UserManagement() {
     }
   }
 
+  // Tạo cuộc trò chuyện 1-1 với user
   const handleCreateChat = async (user: User) => {
     try {
       message.loading({ content: 'Đang tạo cuộc trò chuyện...', key: 'createChat' })
 
-      // Create or get existing direct conversation
       const response = await chatService.createDirectConversation({
-        targetUserId: user._id
+        targetUserId: user._id,
       })
 
       message.success({ content: 'Đã tạo cuộc trò chuyện!', key: 'createChat' })
 
-      // Navigate to chat page with the conversation
+      // Điều hướng sang trang chat
       navigate('/dashboard/chat', { state: { conversationId: response.data._id } })
     } catch (error: any) {
       message.error({
         content: 'Lỗi: ' + (error.response?.data?.message || error.message),
-        key: 'createChat'
+        key: 'createChat',
       })
     }
   }
 
+  // Các cột của bảng user
   const columns: ColumnsType<User> = [
     {
       title: 'Tên',
@@ -169,10 +186,7 @@ export default function UserManagement() {
         if (record.isBanned) {
           return <Tag color="red">BANNED</Tag>
         }
-        const colors: any = {
-          active: 'green',
-          inactive: 'orange',
-        }
+        const colors: any = { active: 'green', inactive: 'orange' }
         return <Tag color={colors[status]}>{status.toUpperCase()}</Tag>
       },
     },
@@ -182,22 +196,19 @@ export default function UserManagement() {
       key: 'createdAt',
       render: (date) => new Date(date).toLocaleDateString('vi-VN'),
     },
+
+    // Các thao tác quản lý user
     {
       title: 'Hành động',
       key: 'actions',
       render: (_, record) => (
         <Space>
+          {/* Xem chi tiết */}
           <Tooltip title="Xem chi tiết">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => {
-                // Navigate to user details
-                message.info('Chi tiết user: ' + record.name)
-              }}
-            />
+            <Button type="text" icon={<EyeOutlined />} onClick={() => message.info(record.name)} />
           </Tooltip>
 
+          {/* Đổi role */}
           <Tooltip title="Đổi role">
             <Button
               type="text"
@@ -210,6 +221,7 @@ export default function UserManagement() {
             />
           </Tooltip>
 
+          {/* Gửi email cảnh báo */}
           <Tooltip title="Gửi email cảnh báo">
             <Button
               type="text"
@@ -221,6 +233,7 @@ export default function UserManagement() {
             />
           </Tooltip>
 
+          {/* Nhắn tin */}
           <Tooltip title="Nhắn tin 1vs1">
             <Button
               type="text"
@@ -229,6 +242,7 @@ export default function UserManagement() {
             />
           </Tooltip>
 
+          {/* Ban / Unban user */}
           {record.isBanned ? (
             <Popconfirm
               title="Bỏ ban user này?"
@@ -260,10 +274,12 @@ export default function UserManagement() {
 
   return (
     <div style={{ padding: '24px' }}>
+      {/* Header + Toolbar */}
       <Card
         title={<h2 style={{ margin: 0 }}>👥 Quản Lý Users</h2>}
         extra={
           <Space>
+            {/* Ô tìm kiếm */}
             <Input
               placeholder="Tìm kiếm theo tên, email, username..."
               prefix={<SearchOutlined />}
@@ -271,6 +287,8 @@ export default function UserManagement() {
               onChange={(e) => setSearch(e.target.value)}
               allowClear
             />
+
+            {/* Bộ lọc role */}
             <Select
               placeholder="Lọc theo role"
               style={{ width: 150 }}
@@ -281,6 +299,8 @@ export default function UserManagement() {
               <Option value="manager">Manager</Option>
               <Option value="employee">Employee</Option>
             </Select>
+
+            {/* Bộ lọc trạng thái */}
             <Select
               placeholder="Lọc theo trạng thái"
               style={{ width: 150 }}
@@ -294,6 +314,7 @@ export default function UserManagement() {
           </Space>
         }
       >
+        {/* Bảng danh sách user */}
         <Table
           columns={columns}
           dataSource={users}
@@ -362,9 +383,7 @@ export default function UserManagement() {
       >
         <Form form={emailForm} onFinish={handleSendEmail} layout="vertical">
           <Form.Item label="Gửi đến">
-            <div>
-              <strong>{selectedUser?.name}</strong> - {selectedUser?.email}
-            </div>
+            <strong>{selectedUser?.name}</strong> - {selectedUser?.email}
           </Form.Item>
 
           <Form.Item

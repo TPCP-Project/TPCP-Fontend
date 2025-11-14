@@ -25,6 +25,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     hasPrev: false,
   })
 
+  // Hàm lấy danh sách cuộc trò chuyện
   const fetchConversations = useCallback(
     async (page = 1, type?: 'project' | 'direct', search?: string) => {
       setLoading(true)
@@ -35,13 +36,13 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
         }
         if (type) params.type = type
 
-        console.log('Fetching conversations with params:', params)
+        console.log('Đang lấy danh sách cuộc trò chuyện với params:', params)
         const response = await chatService.getUserConversations(params)
-        console.log('Conversations response:', response.data)
+        console.log('Kết quả cuộc trò chuyện:', response.data)
 
         let filteredConversations = response.data.conversations
 
-        // Client-side search
+        // Tìm kiếm phía client
         if (search) {
           filteredConversations = filteredConversations.filter(
             (conv) =>
@@ -58,7 +59,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
           hasPrev: response.data.pagination.hasPrev,
         })
       } catch (error: unknown) {
-        console.error('Error fetching conversations:', error)
+        console.error('Lỗi khi tải cuộc trò chuyện:', error)
         const errorMessage = getAxiosErrorMessage(error)
         message.error(`Lỗi tải danh sách chat: ${errorMessage}`)
       } finally {
@@ -68,19 +69,19 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     []
   )
 
+  // Tự động lấy danh sách khi filter hoặc text tìm kiếm thay đổi
   useEffect(() => {
     fetchConversations(1, filterType, searchText)
   }, [fetchConversations, filterType, searchText])
 
-  // Listen for conversation updates
+  // Lắng nghe cập nhật cuộc trò chuyện (có thể gắn socket)
   useEffect(() => {
     const handleConversationUpdate = () => {
-      console.log('Conversation updated, refreshing list...')
+      console.log('Có cập nhật mới → refresh danh sách...')
       fetchConversations(1, filterType, searchText)
     }
 
-    // Listen for conversation updates (you can add socket events here)
-    // For now, refresh every 30 seconds
+    // Tạm thời auto refresh mỗi 30s
     const interval = setInterval(handleConversationUpdate, 30000)
 
     return () => {
@@ -88,15 +89,18 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     }
   }, [fetchConversations, filterType, searchText])
 
+  // Xử lý tìm kiếm
   const handleSearch = (value: string) => {
     setSearchText(value)
     fetchConversations(1, filterType, value)
   }
 
+  // Xử lý thay đổi bộ lọc loại chat
   const handleFilterChange = (value: 'project' | 'direct' | undefined) => {
     setFilterType(value)
   }
 
+  // Avatar cuộc trò chuyện
   const getConversationAvatar = (conversation: Conversation) => {
     if (conversation.avatar?.url) {
       return conversation.avatar.url
@@ -104,6 +108,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     return conversation.type === 'project' ? undefined : undefined
   }
 
+  // Icon cuộc trò chuyện
   const getConversationIcon = (conversation: Conversation) => {
     if (conversation.type === 'project') {
       return <TeamOutlined />
@@ -111,6 +116,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     return <UserOutlined />
   }
 
+  // Hiển thị thời gian tin nhắn cuối
   const getLastMessageTime = (conversation: Conversation) => {
     if (!conversation.stats.last_message_at) return ''
     const date = new Date(conversation.stats.last_message_at)
@@ -126,6 +132,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     }
   }
 
+  // Tiêu đề theo loại hội thoại
   const getConversationTitle = (conversation: Conversation) => {
     if (conversation.type === 'project') {
       return conversation.project_id?.name || conversation.name
@@ -133,6 +140,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
     return conversation.name
   }
 
+  // Subtitle theo loại hội thoại
   const getConversationSubtitle = (conversation: Conversation) => {
     if (conversation.type === 'project') {
       return `${conversation.stats.total_participants} thành viên`
@@ -164,6 +172,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
         </div>
 
         <Space direction="vertical" style={{ width: '100%' }}>
+          {/* Ô tìm kiếm */}
           <Search
             placeholder="Tìm kiếm cuộc trò chuyện..."
             value={searchText}
@@ -172,6 +181,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
             allowClear
           />
 
+          {/* Bộ lọc loại cuộc trò chuyện */}
           <Select
             placeholder="Lọc theo loại"
             style={{ width: '100%' }}
@@ -185,7 +195,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
         </Space>
       </div>
 
-      {/* Conversation List */}
+      {/* Danh sách cuộc trò chuyện */}
       <div style={{ flex: 1, overflow: 'auto' }}>
         <List
           loading={loading}
@@ -261,7 +271,7 @@ export default function ChatList({ onSelectConversation, selectedConversationId 
         />
       </div>
 
-      {/* Pagination */}
+      {/* Phân trang */}
       {pagination.totalPages > 1 && (
         <div style={{ padding: '12px 16px', borderTop: '1px solid #f0f0f0', textAlign: 'center' }}>
           <Space>

@@ -37,6 +37,12 @@ export default function UploadPage() {
         endpoint = '/api/products/upload-pdf'
       } else if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
         endpoint = '/api/products/upload-csv'
+      } else if (
+        file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        file.name.endsWith('.xlsx') ||
+        file.name.endsWith('.xls')
+      ) {
+        endpoint = '/api/products/upload-xlsx'
       } else {
         // JSON upload
         const text = await file.text()
@@ -69,18 +75,22 @@ export default function UploadPage() {
   const uploadProps: UploadProps = {
     name: 'file',
     multiple: false,
-    accept: '.csv,.pdf,.json',
+    accept: '.csv,.pdf,.json,.xlsx,.xls',
     beforeUpload: (file: File) => {
       const isValidType =
         file.type === 'text/csv' ||
         file.type === 'application/pdf' ||
         file.type === 'application/json' ||
+        file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        file.type === 'application/vnd.ms-excel' ||
         file.name.endsWith('.csv') ||
         file.name.endsWith('.pdf') ||
-        file.name.endsWith('.json')
+        file.name.endsWith('.json') ||
+        file.name.endsWith('.xlsx') ||
+        file.name.endsWith('.xls')
 
       if (!isValidType) {
-        message.error('Chỉ chấp nhận file CSV, PDF hoặc JSON!')
+        message.error('Chỉ chấp nhận file CSV, PDF, JSON hoặc XLSX!')
         return Upload.LIST_IGNORE
       }
 
@@ -172,7 +182,7 @@ export default function UploadPage() {
       <div style={{ padding: 24 }}>
         <Title level={2}>Upload dữ liệu sản phẩm (RAG)</Title>
         <Paragraph>
-          Upload file CSV, PDF hoặc JSON chứa thông tin sản phẩm để tích hợp vào hệ thống AI
+          Upload file CSV, PDF, XLSX hoặc JSON chứa thông tin sản phẩm để tích hợp vào hệ thống AI
           Chatbot.
         </Paragraph>
 
@@ -184,7 +194,7 @@ export default function UploadPage() {
                 <UploadOutlined style={{ fontSize: 48, color: '#1890ff' }} />
               </p>
               <p className="ant-upload-text">Kéo thả file vào đây hoặc click để chọn</p>
-              <p className="ant-upload-hint">Hỗ trợ: CSV, PDF, JSON (tối đa 10MB)</p>
+              <p className="ant-upload-hint">Hỗ trợ: CSV, PDF, JSON, XLSX (tối đa 10MB)</p>
             </Dragger>
 
             <Divider />
@@ -197,7 +207,7 @@ export default function UploadPage() {
                 onClick={() => {
                   const input = document.createElement('input')
                   input.type = 'file'
-                  input.accept = '.csv,.pdf,.json'
+                  input.accept = '.csv,.pdf,.json,.xlsx,.xls'
                   input.onchange = (e) => {
                     const file = (e.target as HTMLInputElement).files?.[0]
                     if (file) {

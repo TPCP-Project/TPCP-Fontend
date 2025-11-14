@@ -178,7 +178,7 @@ export const adminService = {
     return response.data
   },
 
-  // =================== PURCHASE MANAGEMENT ===================
+  //PURCHASE MANAGEMENT
 
   getAllPurchases: async (params?: {
     page?: number

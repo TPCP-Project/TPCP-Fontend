@@ -27,6 +27,7 @@ import Team from '@/pages/Dashboard/Team'
 import Chat from '@/pages/Dashboard/Chat'
 import KPI from '@/pages/Dashboard/KPI'
 import AI from '@/pages/Dashboard/AI'
+import Profile from '@/pages/Dashboard/Profile'
 
 // Admin pages
 import AdminDashboard from '@/pages/Admin/AdminDashboard'
@@ -101,7 +102,8 @@ export default function AppRoutes() {
           <Route path="ai" element={<AI />} />
           <Route path="upload" element={<UploadPage />} />
           <Route path="payment" element={<Payment />} />
-          / Admin routes /
+          <Route path="profile" element={<Profile />} />
+          {/* Admin routes */}
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="admin/users" element={<UserManagement />} />
           <Route path="admin/packages" element={<PackageManagement />} />

@@ -20,7 +20,6 @@
   50% { background-position: 100% 50%; }
 }
 
-/* Floating Particles */
 .wrap::before {
   content: '';
   position: absolute;
@@ -37,7 +36,6 @@
   to { transform: translateY(-100px); }
 }
 
-/* Animated Circle */
 .wrap::after {
   content: '';
   position: absolute;
@@ -63,7 +61,6 @@
   }
 }
 
-/* Card Container */
 .card {
   max-width: 500px;
   width: 100%;
@@ -109,7 +106,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Card Header */
 .card :global(.ant-card-head) {
   background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7, #ec4899) !important;
   border-radius: 32px 32px 0 0 !important;
@@ -142,7 +138,6 @@
   padding: 2.5rem !important;
 }
 
-/* Hint Text */
 .hint {
   text-align: center;
   font-size: 1rem !important;
@@ -164,7 +159,6 @@
   font-size: 1.05rem;
 }
 
-/* Form Styling */
 .card :global(.ant-form-item-label > label) {
   color: #374151 !important;
   font-weight: 700 !important;
@@ -189,7 +183,6 @@
   transform: translateY(-2px) !important;
 }
 
-/* OTP Input Special Styling */
 .card :global(.ant-otp) {
   gap: 1rem !important;
   justify-content: center;
@@ -213,7 +206,6 @@
   transform: scale(1.1) !important;
 }
 
-/* Primary Button */
 .card :global(.ant-btn-primary) {
   height: 56px !important;
   border-radius: 16px !important;
@@ -251,7 +243,6 @@
   transform: translateY(-1px) scale(0.98) !important;
 }
 
-/* Links */
 .card a {
   color: #7c3aed;
   font-weight: 700;
@@ -278,12 +269,10 @@
   color: #5b21b6;
 }
 
-/* Footer Text */
 .card :global(.ant-typography) {
   color: #6b7280 !important;
 }
 
-/* Responsive */
 @media (max-width: 640px) {
   .wrap {
     padding: 1rem;
@@ -338,7 +327,6 @@
   }
 }
 
-/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

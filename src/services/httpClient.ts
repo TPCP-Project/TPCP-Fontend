@@ -1,3 +1,5 @@
+//Axios instance với base URL và authorization interceptor
+
 import axios from 'axios'
 
 export const http = axios.create({

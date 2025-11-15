@@ -3,12 +3,14 @@ import { Modal, Form, Input, Switch, Button, message, Select } from 'antd'
 import { projectService, UpdateProjectRequest, Project } from '@/services/projectService'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 
+
 interface EditProjectModalProps {
   visible: boolean
   project: Project | null
   onCancel: () => void
   onSuccess: () => void
 }
+
 
 export default function EditProjectModal({
   visible,
@@ -29,7 +31,9 @@ export default function EditProjectModal({
         settings: project.settings,
       })
     }
+
   }, [project, visible, form])
+
 
   const handleSubmit = async (values: UpdateProjectRequest) => {
     if (!project) return
@@ -46,7 +50,9 @@ export default function EditProjectModal({
     } finally {
       setLoading(false)
     }
+
   }
+
 
   return (
     <Modal title="Chỉnh sửa Project" open={visible} onCancel={onCancel} footer={null} width={600}>
@@ -125,4 +131,5 @@ export default function EditProjectModal({
       </Form>
     </Modal>
   )
+  
 }

@@ -1,4 +1,3 @@
-// pages/tasks/TasksList.tsx
 import React, { useState, useEffect } from 'react'
 import { Card, Table, Tag, Button, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -6,11 +5,13 @@ import { Task, taskService } from '../../services/taskService'
 import TaskDetail from '../../components/TaskDetail'
 import CreateTaskModal from '../../components/modals/CreateTaskModal'
 
+
 export default function TasksList() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(false)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
+
 
   const fetchTasks = async () => {
     setLoading(true)
@@ -24,6 +25,7 @@ export default function TasksList() {
       setLoading(false)
     }
   }
+
 
   useEffect(() => {
     fetchTasks()
@@ -42,6 +44,7 @@ export default function TasksList() {
     }
     return <Tag color={colorMap[status]}>{map[status]}</Tag>
   }
+
 
   const columns = [
     { title: 'Tên công việc', dataIndex: 'title', key: 'title' },
@@ -66,10 +69,10 @@ export default function TasksList() {
     },
   ]
 
-  // Xem chi tiết task
   if (selectedTaskId) {
     return <TaskDetail taskId={selectedTaskId} onBack={() => setSelectedTaskId(null)} />
   }
+
 
   return (
     <>
@@ -88,6 +91,7 @@ export default function TasksList() {
         <Table columns={columns} dataSource={tasks} rowKey="_id" loading={loading} />
       </Card>
 
+
       {/* Modal tạo task */}
       {showCreateModal && (
         <CreateTaskModal
@@ -95,10 +99,13 @@ export default function TasksList() {
           onClose={() => setShowCreateModal(false)}
           onCreated={() => {
             setShowCreateModal(false)
-            fetchTasks() // refresh danh sách sau khi tạo
+            fetchTasks()
           }}
         />
       )}
     </>
+    
   )
+
 }
+

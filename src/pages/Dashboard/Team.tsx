@@ -3,8 +3,10 @@ import { Card, Button, Table } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useAuth } from '@/context/AuthContext'
 
+
 export default function Team() {
   const { user } = useAuth()
+
 
   const columns = [
     { title: 'Thành viên', dataIndex: 'name', key: 'name' },
@@ -13,6 +15,7 @@ export default function Team() {
     { title: 'Dự án tham gia', dataIndex: 'projects', key: 'projects' },
     { title: 'Trạng thái', dataIndex: 'status', key: 'status' },
   ]
+
 
   return (
     <Card
@@ -27,5 +30,8 @@ export default function Team() {
     >
       <Table columns={columns} dataSource={[]} />
     </Card>
+    
   )
+
 }
+

@@ -4,10 +4,13 @@ import { CheckOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons'
 import { invitationService, ProjectJoinRequest } from '@/services/invitationService'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 
+
 interface ProjectJoinRequestsProps {
   projectId: string
   projectName: string
+
 }
+
 
 export default function ProjectJoinRequests({ projectId, projectName }: ProjectJoinRequestsProps) {
   const [requests, setRequests] = useState<ProjectJoinRequest[]>([])
@@ -42,6 +45,7 @@ export default function ProjectJoinRequests({ projectId, projectName }: ProjectJ
       const errorMessage = getAxiosErrorMessage(error)
       message.error(errorMessage)
     }
+
   }
 
   const handleRejectRequest = async (values: { reason?: string }) => {
@@ -56,6 +60,7 @@ export default function ProjectJoinRequests({ projectId, projectName }: ProjectJ
       const errorMessage = getAxiosErrorMessage(error)
       message.error(errorMessage)
     }
+
   }
 
   const getStatusTag = (status: string) => {
@@ -69,6 +74,7 @@ export default function ProjectJoinRequests({ projectId, projectName }: ProjectJ
       text: status,
     }
     return <Tag color={config.color}>{config.text}</Tag>
+
   }
 
   const columns = [
@@ -123,6 +129,7 @@ export default function ProjectJoinRequests({ projectId, projectName }: ProjectJ
         </Space>
       ),
     },
+
   ]
 
   return (
@@ -173,5 +180,7 @@ export default function ProjectJoinRequests({ projectId, projectName }: ProjectJ
         </Form>
       </Modal>
     </div>
+    
   )
+
 }

@@ -19,7 +19,6 @@ export default function KPI() {
   const [loading, setLoading] = useState(false)
   const [loadingProjects, setLoadingProjects] = useState(true)
 
-  // Fetch user's projects
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -27,7 +26,6 @@ export default function KPI() {
         const res = await projectService.getProjects({ status: 'active' })
         setProjects(res.data.projects || [])
 
-        // Auto-select first project if available
         if (res.data.projects && res.data.projects.length > 0) {
           setSelectedProject(res.data.projects[0]._id)
         }
@@ -41,7 +39,6 @@ export default function KPI() {
     fetchProjects()
   }, [])
 
-  // Fetch KPI data when project or month changes
   useEffect(() => {
     if (selectedProject && selectedMonth) {
       fetchKpiData()
@@ -73,7 +70,6 @@ export default function KPI() {
     }
   }
 
-  // Calculate summary statistics
   const getSummaryStats = () => {
     if (!kpiData || !kpiData.members || kpiData.members.length === 0) {
       return { totalMembers: 0, avgScore: 0, goodCount: 0, warningCount: 0, criticalCount: 0 }

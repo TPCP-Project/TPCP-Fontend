@@ -11,12 +11,14 @@ export interface SubscriptionStatus {
   daysRemaining?: number
 }
 
+
 export interface CreatePaymentResponse {
   paymentUrl: string
   orderId: string
   amount: number
   message?: string
 }
+
 
 export interface PaymentHistory {
   customerId: string
@@ -33,6 +35,7 @@ export interface PaymentHistory {
   createdAt: string
 }
 
+
 export async function createPayment(customerInfo?: {
   firstName?: string
   lastName?: string
@@ -48,15 +51,18 @@ export async function createPayment(customerInfo?: {
   return res.data.data as CreatePaymentResponse
 }
 
+
 export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
   const res = await http.get('/api/subscription/status')
   return res.data.data as SubscriptionStatus
 }
 
+
 export async function getPaymentHistory(): Promise<PaymentHistory> {
   const res = await http.get('/api/subscription/payment-history')
   return res.data.data as PaymentHistory
 }
+
 
 export async function renewSubscription(): Promise<CreatePaymentResponse> {
   const res = await http.post('/api/subscription/renew')
@@ -67,10 +73,7 @@ export async function cancelSubscription(): Promise<void> {
   await http.post('/api/subscription/cancel')
 }
 
-/**
- * Mock payment success - CHỈ DÙNG TRONG DEVELOPMENT
- * Tự động tạo Customer với subscription Pro
- */
+
 export async function mockPaymentSuccess(): Promise<void> {
   await http.get('/api/subscription/mock-payment-success')
 }

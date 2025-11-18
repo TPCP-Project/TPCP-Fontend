@@ -19,9 +19,8 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
   const fetchMembers = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await projectService.getProjectMembers(projectId)
-      // Backend trả về data.members
-      const membersData = response.data?.members || []
+      // projectService.getProjectMembers đã trả về array members luôn
+      const membersData = await projectService.getProjectMembers(projectId)
       setMembers(Array.isArray(membersData) ? membersData : [])
     } catch (error: unknown) {
       const errorMessage = getAxiosErrorMessage(error)

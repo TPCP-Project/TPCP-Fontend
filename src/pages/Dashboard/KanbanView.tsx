@@ -12,6 +12,7 @@ export default function KanbanView() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [projects, setProjects] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<any | null>(null)
 
   // Fetch projects on mount
   React.useEffect(() => {
@@ -23,6 +24,7 @@ export default function KanbanView() {
         // Auto-select first project
         if (res.data.projects && res.data.projects.length > 0) {
           setSelectedProjectId(res.data.projects[0]._id)
+          setSelectedProject(res.data.projects[0])
         }
       } catch (err) {
         console.error(err)
@@ -33,6 +35,14 @@ export default function KanbanView() {
     }
     fetchProjects()
   }, [])
+
+  // Update selected project when ID changes
+  React.useEffect(() => {
+    if (selectedProjectId) {
+      const project = projects.find(p => p._id === selectedProjectId)
+      setSelectedProject(project || null)
+    }
+  }, [selectedProjectId, projects])
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task)
@@ -81,6 +91,7 @@ export default function KanbanView() {
         <Card bordered={false}>
           <KanbanBoard
             projectId={selectedProjectId}
+            userRole={selectedProject?.userRole}
             onTaskClick={handleTaskClick}
             onCreateTask={handleCreateTask}
           />

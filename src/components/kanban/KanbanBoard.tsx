@@ -8,6 +8,7 @@ import { TaskCard } from './TaskCard'
 
 interface KanbanBoardProps {
   projectId: string
+  userRole?: string
   onTaskClick: (task: Task) => void
   onCreateTask: () => void
 }
@@ -16,6 +17,7 @@ const columnOrder: TaskStatus[] = ['TO_DO', 'DRAFTING', 'IN_REVIEW', 'APPROVED',
 
 export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   projectId,
+  userRole,
   onTaskClick,
   onCreateTask,
 }) => {
@@ -234,9 +236,11 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
           <Button icon={<ReloadOutlined />} onClick={fetchTasks}>
             Refresh
           </Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={onCreateTask}>
-            Create
-          </Button>
+          {(userRole === 'owner' || userRole === 'admin') && (
+            <Button type="primary" icon={<PlusOutlined />} onClick={onCreateTask}>
+              Create
+            </Button>
+          )}
         </div>
       </div>
 

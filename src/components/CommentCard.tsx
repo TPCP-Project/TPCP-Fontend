@@ -9,6 +9,8 @@ interface Author {
   name: string
   role: string
   avatar?: string
+  username: string
+  email: string
 }
 
 interface Comment {
@@ -96,33 +98,25 @@ export default function CommentCard({ taskId }: { taskId: string }) {
                   avatar={
                     <Avatar
                       src={item.author?.avatar || '/default-avatar.png'}
-                      alt={item.author?.name}
+                      alt={item.author?.username}
                     />
                   }
                   title={
                     <>
-                      <strong>{item.author?.name}</strong>{' '}
+                      <strong>{item.author?.username}</strong>
                       {item.author?.role && (
-                        <Tag
-                          color={getRoleColor(item.author.role)}
-                          style={{ marginLeft: 4 }}
-                        >
+                        <Tag color={getRoleColor(item.author.role)} style={{ marginLeft: 4 }}>
                           {capitalize(item.author.role)}
                         </Tag>
                       )}
-                      <span
-                        style={{
-                          fontSize: 12,
-                          color: '#aaa',
-                          marginLeft: 8,
-                        }}
-                      >
+                      {/* nếu muốn thêm thời gian thì mở lại span này */}
+                      <span style={{ fontSize: 12, color: '#aaa', marginLeft: 8 }}>
                         {new Date(item.createdAt).toLocaleString('vi-VN')}
                       </span>
                     </>
                   }
                   description={item.content}
-                />
+                />{' '}
               </List.Item>
             )}
           />

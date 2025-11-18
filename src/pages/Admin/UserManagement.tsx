@@ -186,10 +186,15 @@ export default function UserManagement() {
         if (record.isBanned) {
           return <Tag color="red">BANNED</Tag>
         }
-        const colors: any = { active: 'green', inactive: 'orange' }
-        return <Tag color={colors[status]}>{status.toUpperCase()}</Tag>
+
+        const displayStatus = status?.toLowerCase() === 'inactive' ? 'active' : status
+
+        const colors: any = { active: 'green' }
+
+        return <Tag color={colors[displayStatus]}>{displayStatus.toUpperCase()}</Tag>
       },
     },
+
     {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
@@ -308,7 +313,7 @@ export default function UserManagement() {
               allowClear
             >
               <Option value="active">Active</Option>
-              <Option value="inactive">Inactive</Option>
+              <Option value="inactive">InActive</Option>
               <Option value="banned">Banned</Option>
             </Select>
           </Space>

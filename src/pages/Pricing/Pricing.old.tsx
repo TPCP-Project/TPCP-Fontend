@@ -1,4 +1,3 @@
-// src/pages/Pricing/Pricing.tsx
 import React, { useEffect, useState } from 'react'
 import { Card, Button, Typography, Row, Col, Table, Tag } from 'antd'
 import {
@@ -23,7 +22,6 @@ interface Feature {
   key: string
   isCategory?: boolean
 }
-
 export default function Pricing() {
   const [isActive, setIsActive] = useState<boolean | null>(null)
   useEffect(() => {
@@ -48,6 +46,7 @@ export default function Pricing() {
       buttonText: 'Bắt đầu miễn phí',
       popular: false,
     },
+
     {
       name: 'Pro / Team',
       price: '1500K - 3000K',
@@ -59,6 +58,7 @@ export default function Pricing() {
       buttonText: 'Chọn gói Pro',
       popular: true,
     },
+
     {
       name: 'Enterprise',
       price: 'Custom',
@@ -70,6 +70,7 @@ export default function Pricing() {
       buttonText: 'Liên hệ tư vấn',
       popular: false,
     },
+
   ]
 
   const featureComparison = [
@@ -83,6 +84,7 @@ export default function Pricing() {
           business: false,
           enterprise: true,
         },
+
         {
           name: 'Nâng cấp gói + Quản lý subscription',
           free: false,
@@ -90,13 +92,16 @@ export default function Pricing() {
           business: false,
           enterprise: true,
         },
+
         {
+
           name: 'Full control + hỗ trợ SSO',
           free: false,
           pro: false,
           business: false,
           enterprise: true,
         },
+
       ],
     },
     {
@@ -109,6 +114,7 @@ export default function Pricing() {
           business: false,
           enterprise: false,
         },
+
         {
           name: 'Nhiều project (tối đa 10), phân quyền cơ bản',
           free: false,
@@ -116,6 +122,7 @@ export default function Pricing() {
           business: false,
           enterprise: false,
         },
+
         {
           name: 'Không giới hạn project, phân quyền nâng cao',
           free: false,
@@ -123,6 +130,7 @@ export default function Pricing() {
           business: false,
           enterprise: true,
         },
+
         {
           name: 'Audit log, user provisioning',
           free: false,
@@ -130,6 +138,7 @@ export default function Pricing() {
           business: false,
           enterprise: true,
         },
+
       ],
     },
     {
@@ -163,6 +172,7 @@ export default function Pricing() {
           business: false,
           enterprise: true,
         },
+
       ],
     },
     {
@@ -277,7 +287,7 @@ export default function Pricing() {
           <CloseOutlined style={{ color: '#d1d5db', fontSize: '18px' }} />
         ),
     },
-    // Đã bỏ gói Business khỏi bảng so sánh
+
     {
       title: 'Enterprise',
       dataIndex: 'enterprise',
@@ -305,6 +315,7 @@ export default function Pricing() {
     ...cat.features.map((f, i) => ({ key: `${cat.category}-${i}`, ...f })),
   ])
 
+  
   return (
     <div className={styles.container}>
       <div className={styles.header}>

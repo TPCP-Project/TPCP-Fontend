@@ -1,4 +1,3 @@
-// src/pages/Login/Login.tsx
 import React, { useState, useEffect } from 'react'
 import { Card, Form, Input, Button, Typography, message, Space, Divider, Checkbox } from 'antd'
 import {
@@ -23,12 +22,11 @@ type LocationState = { from?: { pathname?: string } } | undefined
 export default function Login() {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
-  const { login, isLoading } = useAuth() // Đã đổi tên đúng
+  const { login, isLoading } = useAuth() 
   const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as LocationState)?.from?.pathname || '/dashboard'
 
-  // Demo credentials for testing
   useEffect(() => {
     form.setFieldsValue({})
   }, [form])
@@ -40,7 +38,6 @@ export default function Login() {
 
       console.log('Full API Response:', response)
 
-      // Lấy token và user từ response.data
       const token = response.data.accessToken
       const userData = response.data.user
 

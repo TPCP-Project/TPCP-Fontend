@@ -1,4 +1,3 @@
-// src/components/common/Layout/DashboardLayout.tsx
 import React, { useState } from 'react'
 import { Layout, Menu, Avatar, Typography, Button, Space, Dropdown, Badge, Input } from 'antd'
 import type { MenuProps } from 'antd'
@@ -58,7 +57,6 @@ export default function DashboardLayout() {
       })
     }
 
-    // Admin menu
     if (user?.role === 'admin') {
       baseItems = [
         // { type: 'divider' },

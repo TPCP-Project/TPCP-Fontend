@@ -14,8 +14,10 @@ import EditProjectModal from '@/components/modals/EditProjectModal'
 import ProjectDetail from '@/components/ProjectDetail'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 
+
 const { Search } = Input
 const { Option } = Select
+
 
 export default function Projects() {
   const { user } = useAuth()
@@ -30,6 +32,7 @@ export default function Projects() {
   const [filters, setFilters] = useState({
     status: undefined as 'active' | 'completed' | 'archived' | undefined,
     search: '',
+
   })
 
   const fetchProjects = async () => {
@@ -51,11 +54,11 @@ export default function Projects() {
 
   useEffect(() => {
     fetchProjects()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.status])
 
   const refreshProjects = () => {
     fetchProjects()
+
   }
 
   const handleDelete = async (projectId: string) => {
@@ -67,12 +70,15 @@ export default function Projects() {
       const errorMessage = getAxiosErrorMessage(error)
       message.error(errorMessage)
     }
+
   }
 
   const handleEdit = (project: Project) => {
     setSelectedProject(project)
     setEditModalVisible(true)
+
   }
+
 
   const getStatusTag = (status: string) => {
     const statusConfig = {
@@ -85,7 +91,9 @@ export default function Projects() {
       text: status,
     }
     return <Tag color={config.color}>{config.text}</Tag>
+
   }
+
 
   const columns = [
     {
@@ -162,7 +170,9 @@ export default function Projects() {
         </Space>
       ),
     },
+
   ]
+
 
   const handleFilterChange = (
     key: string,
@@ -252,5 +262,8 @@ export default function Projects() {
         </>
       )}
     </div>
+
   )
+
 }
+

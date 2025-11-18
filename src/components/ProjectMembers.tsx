@@ -6,10 +6,13 @@ import { chatService } from '@/services/chatService'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 import { useNavigate } from 'react-router-dom'
 
+
 interface ProjectMembersProps {
   projectId: string
   projectName: string
 }
+
+
 
 export default function ProjectMembers({ projectId, projectName }: ProjectMembersProps) {
   const navigate = useNavigate()
@@ -19,21 +22,25 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
   const fetchMembers = useCallback(async () => {
     setLoading(true)
     try {
+
       // projectService.getProjectMembers đã trả về array members luôn
       const membersData = await projectService.getProjectMembers(projectId)
+
       setMembers(Array.isArray(membersData) ? membersData : [])
     } catch (error: unknown) {
       const errorMessage = getAxiosErrorMessage(error)
       message.error(errorMessage)
-      setMembers([]) // Set empty array on error
+      setMembers([]) 
     } finally {
       setLoading(false)
     }
   }, [projectId])
 
+
   useEffect(() => {
     fetchMembers()
   }, [fetchMembers])
+
 
   const getRoleTag = (role: string) => {
     const roleConfig = {
@@ -51,6 +58,7 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
         {config.text}
       </Tag>
     )
+
   }
 
   const handleRemoveMember = async (memberId: string, memberName: string) => {
@@ -62,20 +70,21 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
       const errorMessage = getAxiosErrorMessage(error)
       message.error(errorMessage)
     }
+
   }
+
 
   const handleCreateChat = async (member: ProjectMember) => {
     try {
       message.loading({ content: 'Đang tạo cuộc trò chuyện...', key: 'createChat' })
 
-      // Create or get existing direct conversation
       const response = await chatService.createDirectConversation({
         targetUserId: member.user._id
       })
 
+
       message.success({ content: 'Đã tạo cuộc trò chuyện!', key: 'createChat' })
 
-      // Navigate to chat page with the conversation
       navigate('/dashboard/chat', { state: { conversationId: response.data._id } })
     } catch (error: unknown) {
       const errorMessage = getAxiosErrorMessage(error)
@@ -143,7 +152,9 @@ export default function ProjectMembers({ projectId, projectName }: ProjectMember
         </Space>
       ),
     },
+    
   ]
+
 
   return (
     <Card title={`Thành viên project: ${projectName}`}>

@@ -32,7 +32,7 @@ import {
 
 const { Title, Text, Paragraph } = Typography
 
-// PaymentHistory interface is now imported from subscriptionService
+
 
 export default function Payment() {
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null)
@@ -41,10 +41,12 @@ export default function Payment() {
   const [renewLoading, setRenewLoading] = useState(false)
   const [cancelLoading, setCancelLoading] = useState(false)
 
+
   useEffect(() => {
     loadSubscriptionStatus()
     loadPaymentHistory()
   }, [])
+
 
   const loadSubscriptionStatus = async () => {
     try {
@@ -56,6 +58,7 @@ export default function Payment() {
     } finally {
       setLoading(false)
     }
+
   }
 
   const loadPaymentHistory = async () => {
@@ -65,6 +68,7 @@ export default function Payment() {
     } catch (error) {
       console.error('Failed to load payment history:', error)
     }
+
   }
 
   const handleRenew = async () => {
@@ -77,7 +81,9 @@ export default function Payment() {
     } finally {
       setRenewLoading(false)
     }
+
   }
+
 
   const handleCancel = () => {
     Modal.confirm({
@@ -100,6 +106,7 @@ export default function Payment() {
         }
       },
     })
+
   }
 
   const getStatusColor = (status: string | null | undefined): string => {
@@ -113,6 +120,7 @@ export default function Payment() {
       default:
         return 'default'
     }
+
   }
 
   const getStatusIcon = (status: string | null | undefined) => {
@@ -126,6 +134,7 @@ export default function Payment() {
       default:
         return <ClockCircleOutlined />
     }
+
   }
 
   const getStatusText = (status: string | null | undefined): string => {
@@ -139,6 +148,7 @@ export default function Payment() {
       default:
         return 'Chưa có'
     }
+
   }
 
   const formatCurrency = (amount: number) => {
@@ -156,7 +166,9 @@ export default function Payment() {
       hour: '2-digit',
       minute: '2-digit',
     })
+
   }
+
 
   return (
     <div style={{ padding: 24 }}>

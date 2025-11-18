@@ -16,10 +16,12 @@ import { PlusOutlined, CopyOutlined, StopOutlined, MailOutlined } from '@ant-des
 import { invitationService, ProjectInvitation } from '@/services/invitationService'
 import { getAxiosErrorMessage } from '@/utils/httpError'
 
+
 interface ProjectInvitationsProps {
   projectId: string
   projectName: string
 }
+
 
 export default function ProjectInvitations({ projectId, projectName }: ProjectInvitationsProps) {
   const [invitations, setInvitations] = useState<ProjectInvitation[]>([])
@@ -29,6 +31,7 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
   const [selectedInviteCode, setSelectedInviteCode] = useState('')
   const [form] = Form.useForm()
   const [sendForm] = Form.useForm()
+
 
   const fetchInvitations = useCallback(async () => {
     setLoading(true)
@@ -42,6 +45,7 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
       setLoading(false)
     }
   }, [projectId])
+
 
   useEffect(() => {
     fetchInvitations()
@@ -61,6 +65,7 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
   }
 
   const handleSendInvitation = async (values: { emails: string }) => {
+
     try {
       const response = await invitationService.sendInvitation({
         inviteCode: selectedInviteCode,
@@ -97,6 +102,7 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
     }
   }
 
+
   const handleDeactivateInviteCode = async (inviteCode: string) => {
     try {
       await invitationService.deactivateInviteCode(inviteCode)
@@ -113,6 +119,7 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
     message.success('Đã copy mã mời!')
   }
 
+
   const getStatusTag = (isActive: boolean, expiryDate: string) => {
     const now = new Date()
     const expiry = new Date(expiryDate)
@@ -127,6 +134,7 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
 
     return <Tag color="green">Hoạt động</Tag>
   }
+
 
   const columns = [
     {
@@ -192,7 +200,9 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
         </Space>
       ),
     },
+
   ]
+
 
   return (
     <div>
@@ -288,4 +298,6 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
       </Modal>
     </div>
   )
+  
 }
+

@@ -1,6 +1,4 @@
-/* src/pages/Login/Login.module.css - OPTIMIZED ULTRA MODERN DESIGN */
 
-/* Base & Background */
 .loginPage {
   min-height: 100vh;
   position: relative;
@@ -18,7 +16,6 @@
   50% { background-position: 100% 50%; }
 }
 
-/* Floating Particles */
 .loginPage::before {
   content: '';
   position: absolute;
@@ -36,7 +33,6 @@
   to { transform: translateY(-100px); }
 }
 
-/* Animated Shapes */
 .backgroundShapes {
   position: absolute;
   inset: 0;
@@ -82,7 +78,6 @@
   50% { transform: translateY(-60px) rotate(180deg); border-radius: 40% 60%; }
 }
 
-/* Layout */
 .container {
   position: relative;
   z-index: 10;
@@ -92,7 +87,6 @@
   align-items: center;
 }
 
-/* Branding Side */
 .brandingSide {
   padding: 4rem;
   display: flex;
@@ -171,7 +165,6 @@
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Features */
 .features {
   display: flex;
   flex-direction: column;
@@ -214,7 +207,6 @@
   transform: scale(1.1) rotate(5deg);
 }
 
-/* Form Side */
 .formSide {
   padding: 4rem;
   display: flex;
@@ -256,7 +248,6 @@
   50% { opacity: 0.8; }
 }
 
-/* Card Header */
 .cardHeader {
   text-align: center;
   margin-bottom: 2.5rem;
@@ -298,7 +289,6 @@
   font-weight: 500;
 }
 
-/* Form Elements */
 .loginForm {
   margin-top: 2.5rem;
 }
@@ -337,7 +327,6 @@
   transform: scale(1.1);
 }
 
-/* Form Options */
 .formOptions {
   display: flex;
   justify-content: space-between;
@@ -371,8 +360,8 @@
 .forgotLink:hover::after {
   width: 100%;
 }
-
 /* Buttons */
+
 .loginButton {
   height: 64px !important;
   border-radius: 20px !important;
@@ -404,7 +393,6 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Sign Up Prompt */
 .signupPrompt {
   text-align: center;
   margin-top: 2.5rem;
@@ -445,8 +433,8 @@
 .signupLink:hover::after {
   width: 100%;
 }
-
 /* Footer */
+
 .footer {
   position: absolute;
   bottom: 2rem;
@@ -461,7 +449,6 @@
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Loading Screen */
 .loadingScreen {
   display: flex;
   flex-direction: column;
@@ -496,7 +483,6 @@
   50% { opacity: 1; }
 }
 
-/* Responsive Design */
 @media (max-width: 968px) {
   .container {
     grid-template-columns: 1fr;
@@ -561,7 +547,6 @@
   }
 }
 
-/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

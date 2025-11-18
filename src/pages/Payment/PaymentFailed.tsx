@@ -2,10 +2,12 @@ import React from 'react'
 import { Card, Result, Button } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 
+
 export default function PaymentFailed() {
   const [searchParams] = useSearchParams()
   const error = searchParams.get('error') || 'Thanh toán không thành công'
 
+  
   return (
     <div style={{ padding: '40px 24px', maxWidth: 800, margin: '0 auto' }}>
       <Card>
@@ -24,5 +26,7 @@ export default function PaymentFailed() {
         />
       </Card>
     </div>
+
   )
+
 }

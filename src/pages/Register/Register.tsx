@@ -11,7 +11,7 @@ export default function Register() {
   async function onFinish(values: AuthAPI.RegisterBody) {
     try {
       await AuthAPI.register(values)
-      message.success('Đăng ký thành công! Vui lòng nhập mã xác thực.')
+      message.success('Đăng ký thành công ! Vui lòng nhập mã xác thực.')
       navigate(`/verify-signup?email=${encodeURIComponent(values.email)}`)
     } catch (err: unknown) {
       message.error(getAxiosErrorMessage(err))
@@ -31,8 +31,8 @@ export default function Register() {
           </div>
           <h1>Chào mừng! Bắt đầu tạo tài khoản</h1>
           <p>
-            Đăng ký cực nhanh chỉ trong 1 phút. Sau khi đăng ký, bạn sẽ nhận được <b>mã xác thực</b>{' '}
-            gửi về email.
+            Đăng ký cực nhanh chỉ trong 1 phút . Sau khi đăng ký,bạn sẽ nhận được <b>mã xác thực</b>{' '}
+            gửi về email .
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export default function Register() {
             <Form.Item
               label="Họ và tên"
               name="name"
-              rules={[{ required: true, message: 'Nhập họ tên' }, { min: 2 }]}
+              rules={[{ required: true, message: 'Nhập họ và tên' }, { min: 2 }]}
             >
               <Input placeholder="Nguyen Van A" />
             </Form.Item>

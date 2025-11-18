@@ -1,12 +1,9 @@
-/* src/components/common/Layout/DashboardLayout.module.css */
 
-/* Layout Container */
 .layout {
     min-height: 100vh;
     background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   }
   
-  /* Sidebar */
   .sider {
     background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12) !important;
@@ -27,7 +24,6 @@
     pointer-events: none;
   }
   
-  /* Logo Area */
   .logoArea {
     height: 64px;
     display: flex;
@@ -68,7 +64,6 @@
     -webkit-text-fill-color: transparent;
   }
   
-  /* Menu Styling */
   .sider :global(.ant-menu-dark) {
     background: transparent !important;
     border: none !important;
@@ -137,7 +132,6 @@
     transform: scale(1.1);
   }
   
-  /* Header */
   .header {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98)) !important;
     backdrop-filter: blur(20px) !important;
@@ -183,7 +177,6 @@
     -webkit-text-fill-color: transparent;
   }
   
-  /* Header Right */
   .headerRight {
     display: flex;
     align-items: center;
@@ -226,7 +219,6 @@
     font-size: 18px;
   }
   
-  /* User Menu */
   .userMenu {
     display: flex;
     align-items: center;
@@ -274,20 +266,17 @@
     line-height: 1.2 !important;
   }
   
-  /* Content Area */
   .content {
     margin: 24px !important;
     min-height: 280px;
     background: transparent !important;
   }
   
-  /* Badge Styling */
   .headerRight :global(.ant-badge-count) {
     background: linear-gradient(135deg, #ef4444, #dc2626) !important;
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
   }
   
-  /* Dropdown Menu Styling */
   :global(.ant-dropdown-menu) {
     border-radius: 16px !important;
     padding: 8px !important;
@@ -314,13 +303,11 @@
     margin-right: 12px;
   }
   
-  /* Collapsed State */
   .sider.collapsed :global(.ant-menu-item) {
     padding: 0 20px !important;
     justify-content: center;
   }
   
-  /* Responsive */
   @media (max-width: 768px) {
     .searchInput {
       display: none;

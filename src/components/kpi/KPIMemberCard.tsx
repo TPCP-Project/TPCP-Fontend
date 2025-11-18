@@ -3,9 +3,11 @@ import { Card, Avatar, Tag, Progress, Row, Col, Statistic } from 'antd'
 import { UserOutlined, CheckCircleOutlined, ClockCircleOutlined, StopOutlined, WarningOutlined } from '@ant-design/icons'
 import { KPIMemberData } from '../../services/kpiService'
 
+
 interface KPIMemberCardProps {
   data: KPIMemberData
 }
+
 
 const statusColors = {
   Good: { bg: '#f6ffed', border: '#52c41a', text: '#52c41a' },
@@ -19,13 +21,14 @@ const statusIcons = {
   Critical: <StopOutlined />,
 }
 
+
 const statusText = {
   Good: 'Tốt',
   Warning: 'Cảnh báo',
   Critical: 'Nguy hiểm',
 }
 
-// Màu avatar theo user
+
 const getAvatarColor = (name?: string, email?: string) => {
   const colors = ['#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1', '#13c2c2']
   const str = name || email || ''
@@ -36,10 +39,12 @@ const getAvatarColor = (name?: string, email?: string) => {
   return colors[Math.abs(hash) % colors.length]
 }
 
+
 export const KPIMemberCard: React.FC<KPIMemberCardProps> = ({ data }) => {
   const { employee, role, kpi } = data
   const statusColor = statusColors[kpi.status]
   const avatarColor = getAvatarColor(employee.name, employee.email)
+
 
   return (
     <Card
@@ -51,6 +56,7 @@ export const KPIMemberCard: React.FC<KPIMemberCardProps> = ({ data }) => {
       }}
       hoverable
     >
+
       {/* Header: Avatar + Name + Score */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -81,6 +87,7 @@ export const KPIMemberCard: React.FC<KPIMemberCardProps> = ({ data }) => {
           </Tag>
         </div>
       </div>
+
 
       {/* Metrics */}
       <Row gutter={16}>
@@ -117,6 +124,7 @@ export const KPIMemberCard: React.FC<KPIMemberCardProps> = ({ data }) => {
         </Col>
       </Row>
 
+
       {/* Progress Bars */}
       <div style={{ marginTop: 16 }}>
         <div style={{ marginBottom: 8 }}>
@@ -152,6 +160,7 @@ export const KPIMemberCard: React.FC<KPIMemberCardProps> = ({ data }) => {
           <StopOutlined /> {kpi.taskMetrics.tasksBlocked} task bị chặn
         </Tag>
       )}
-    </Card>
+    </Card> 
+
   )
 }

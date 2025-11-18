@@ -24,6 +24,7 @@ import {
   UsergroupAddOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '@/context/AuthContext'
+import NotificationBell from '@/components/NotificationBell'
 import styles from './DashboardLayout.module.css'
 
 const { Sider, Content, Header } = Layout
@@ -78,6 +79,11 @@ export default function DashboardLayout() {
           key: '/dashboard/admin/purchases',
           icon: <ShoppingCartOutlined />,
           label: 'Quản lý Đơn Hàng',
+        },
+        {
+          key: '/dashboard/admin/notifications',
+          icon: <BellOutlined />,
+          label: 'Thông báo',
         },
         { key: '/dashboard/chat', icon: <MessageOutlined />, label: 'Trò chuyện' },
       ]
@@ -151,9 +157,7 @@ export default function DashboardLayout() {
 
           <Space size="middle" className={styles.headerRight}>
             <Input.Search placeholder="Tìm kiếm..." className={styles.searchInput} />
-            <Badge count={3}>
-              <Button type="text" icon={<BellOutlined />} className={styles.notificationBtn} />
-            </Badge>
+            {user?.role === 'admin' && <NotificationBell />}
             <Dropdown menu={{ items: userMenuItems }} trigger={['click']}>
               <div className={styles.userMenu}>
                 <Avatar icon={<UserOutlined />} className={styles.userAvatar} />

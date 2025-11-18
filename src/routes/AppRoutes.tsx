@@ -34,6 +34,7 @@ import AdminDashboard from '@/pages/Admin/AdminDashboard'
 import UserManagement from '@/pages/Admin/UserManagement'
 import PackageManagement from '@/pages/Admin/PackageManagement'
 import PurchaseManagement from '@/pages/Admin/PurchaseManagement'
+import AdminNotifications from '@/pages/Admin/AdminNotifications'
 
 // Project Join page
 import JoinProject from '@/pages/JoinProject/JoinProject'
@@ -108,6 +109,7 @@ export default function AppRoutes() {
           <Route path="admin/users" element={<UserManagement />} />
           <Route path="admin/packages" element={<PackageManagement />} />
           <Route path="admin/purchases" element={<PurchaseManagement />} />
+          <Route path="admin/notifications" element={<AdminNotifications />} />
         </Route>
 
         {/* Join project page (outside DashboardLayout for full-page experience) */}

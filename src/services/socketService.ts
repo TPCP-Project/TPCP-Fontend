@@ -242,6 +242,13 @@ class SocketService {
     }
   }
 
+  // Admin notification listeners
+  onNewPurchaseNotification(callback: (data: any) => void) {
+    if (this.socket) {
+      this.socket.on('new_purchase_notification', callback)
+    }
+  }
+
   // Remove event listeners
   offNewMessage() {
     if (this.socket) {
@@ -294,6 +301,12 @@ class SocketService {
   offError() {
     if (this.socket) {
       this.socket.off('error')
+    }
+  }
+
+  offNewPurchaseNotification() {
+    if (this.socket) {
+      this.socket.off('new_purchase_notification')
     }
   }
 

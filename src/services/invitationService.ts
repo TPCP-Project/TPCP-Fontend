@@ -31,7 +31,13 @@ export interface CreateInviteCodeRequest {
 
 export interface SendInvitationRequest {
   inviteCode: string
-  email: string
+  email: string | string[]
+}
+
+export interface SendInvitationResult {
+  success: string[]
+  failed: { email: string; reason: string }[]
+  total: number
 }
 
 export interface JoinByInviteCodeRequest {
@@ -50,7 +56,7 @@ export const invitationService = {
   },
 
   // Gửi lời mời tham gia project qua email
-  sendInvitation: async (data: SendInvitationRequest): Promise<ApiResponse<{ message: string; to: string; project_name: string }>> => {
+  sendInvitation: async (data: SendInvitationRequest): Promise<ApiResponse<{ message: string; project_name: string; results: SendInvitationResult }>> => {
     const response = await http.post('/api/projects/invitations/send', data)
     return response.data
   },

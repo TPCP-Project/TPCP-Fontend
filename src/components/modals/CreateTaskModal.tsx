@@ -44,12 +44,9 @@ export default function CreateTaskModal({ visible, onClose, onCreated }: CreateT
 
     try {
       console.log('Fetching members for project:', projectId)
-      const res = await projectService.getProjectMembers(projectId)
-      console.log('API Response:', res)
-      console.log('Members data:', res?.data?.members)
-
-      const membersData = res?.data?.members || []
-      console.log('Setting members:', membersData)
+      // projectService.getProjectMembers đã trả về array members luôn
+      const membersData = await projectService.getProjectMembers(projectId)
+      console.log('Members data:', membersData)
 
       if (membersData.length > 0) {
         console.log('First member structure:', JSON.stringify(membersData[0], null, 2))

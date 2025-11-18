@@ -64,14 +64,35 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
     }
   }
 
+  const handleSendInvitation = async (values: { emails: string }) => {
 
-  const handleSendInvitation = async (values: { email: string }) => {
     try {
-      await invitationService.sendInvitation({
+      const response = await invitationService.sendInvitation({
         inviteCode: selectedInviteCode,
-        email: values.email,
+        email: values.emails,
       })
-      message.success('Đã gửi lời mời thành công!')
+
+      // Hiển thị kết quả chi tiết
+      if (response.data.results) {
+        const { success, failed, total } = response.data.results
+
+        if (success.length > 0 && failed.length === 0) {
+          message.success(`Đã gửi lời mời thành công đến ${success.length} email!`)
+        } else if (success.length > 0 && failed.length > 0) {
+          message.warning(
+            `Đã gửi thành công ${success.length}/${total} email. ${failed.length} email thất bại. ` +
+            `Lỗi: ${failed.map(f => `${f.email} (${f.reason})`).join(', ')}`
+          )
+        } else {
+          message.error(
+            `Không thể gửi email đến tất cả ${failed.length} địa chỉ. ` +
+            `Lỗi: ${failed.map(f => `${f.email} (${f.reason})`).join(', ')}`
+          )
+        }
+      } else {
+        message.success('Đã gửi lời mời thành công!')
+      }
+
       setSendModalVisible(false)
       sendForm.resetFields()
       setSelectedInviteCode('')
@@ -248,18 +269,21 @@ export default function ProjectInvitations({ projectId, projectName }: ProjectIn
           setSelectedInviteCode('')
         }}
         footer={null}
-        width={400}
+        width={500}
       >
         <Form form={sendForm} layout="vertical" onFinish={handleSendInvitation}>
           <Form.Item
-            name="email"
+            name="emails"
             label="Email người được mời"
             rules={[
-              { required: true, message: 'Vui lòng nhập email!' },
-              { type: 'email', message: 'Email không hợp lệ!' },
+              { required: true, message: 'Vui lòng nhập ít nhất một email!' },
             ]}
+            help="Bạn có thể nhập nhiều email, cách nhau bằng dấu phẩy (,) hoặc dấu cách"
           >
-            <Input placeholder="Nhập email" />
+            <Input.TextArea
+              placeholder="Ví dụ: user1@example.com, user2@example.com hoặc user1@example.com user2@example.com"
+              rows={4}
+            />
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>

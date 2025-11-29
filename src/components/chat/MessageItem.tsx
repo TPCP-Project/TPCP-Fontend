@@ -34,19 +34,21 @@ export default function MessageItem({
 }: MessageItemProps) {
   const [showReactions, setShowReactions] = useState(false)
 
+  // Lấy trạng thái tin nhắn: gửi, nhận, đã đọc, đã xoá
   const getMessageStatus = () => {
     if (message.status === 'deleted') {
       return 'Đã xóa'
     }
     if (message.read_by.length > 0) {
-      return <CheckCircleOutlined style={{ color: '#1890ff' }} />
+      return <CheckCircleOutlined style={{ color: '#1890ff' }} /> // Đã đọc
     }
     if (message.status === 'delivered') {
-      return <CheckCircleOutlined style={{ color: '#52c41a' }} />
+      return <CheckCircleOutlined style={{ color: '#52c41a' }} /> // Đã gửi tới server
     }
-    return <CheckOutlined style={{ color: '#d9d9d9' }} />
+    return <CheckOutlined style={{ color: '#d9d9d9' }} /> // Đã gửi nhưng chưa nhận
   }
 
+  // Hiển thị thời gian gửi tin nhắn
   const getMessageTime = () => {
     const date = new Date(message.createdAt)
     return date.toLocaleTimeString('vi-VN', {
@@ -55,6 +57,7 @@ export default function MessageItem({
     })
   }
 
+  // Khi nhấn emoji reaction
   const handleReactionClick = (emoji: string) => {
     if (onReaction) {
       onReaction(message._id, emoji)
@@ -62,6 +65,7 @@ export default function MessageItem({
     setShowReactions(false)
   }
 
+  // Menu hành động: trả lời, chỉnh sửa, xoá
   const getActionMenu = () => (
     <Menu>
       <Menu.Item key="reply" onClick={() => onReply?.(message)}>
@@ -85,6 +89,7 @@ export default function MessageItem({
     </Menu>
   )
 
+  // Nếu tin nhắn đã bị xoá
   if (message.status === 'deleted') {
     return (
       <div
@@ -128,7 +133,7 @@ export default function MessageItem({
           gap: '8px',
         }}
       >
-        {/* Avatar */}
+        {/* Avatar người gửi */}
         <Avatar
           src={message.sender_id.avatar?.url}
           size="small"
@@ -138,7 +143,7 @@ export default function MessageItem({
           {message.sender_id.name.charAt(0).toUpperCase()}
         </Avatar>
 
-        {/* Message Content */}
+        {/* Nội dung tin nhắn */}
         <div
           style={{
             display: 'flex',
@@ -146,7 +151,7 @@ export default function MessageItem({
             alignItems: isOwn ? 'flex-end' : 'flex-start',
           }}
         >
-          {/* Sender name for group chats */}
+          {/* Hiển thị tên + username trong nhóm (tin nhắn từ người khác) */}
           {!isOwn && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
               <Text type="secondary" style={{ fontSize: '12px', fontWeight: 'bold' }}>
@@ -158,7 +163,7 @@ export default function MessageItem({
             </div>
           )}
 
-          {/* Show sender info for own messages in group chats */}
+          {/* Với tin nhắn của chính mình trong nhóm → vẫn hiển thị username & name */}
           {isOwn && (
             <div
               style={{
@@ -178,7 +183,7 @@ export default function MessageItem({
             </div>
           )}
 
-          {/* Message bubble */}
+          {/* Khung tin nhắn */}
           <div
             style={{
               position: 'relative',
@@ -189,7 +194,7 @@ export default function MessageItem({
               wordBreak: 'break-word',
             }}
           >
-            {/* Reply indicator */}
+            {/* Nếu là tin nhắn trả lời người khác */}
             {message.reply_to && (
               <div
                 style={{
@@ -209,17 +214,17 @@ export default function MessageItem({
               </div>
             )}
 
-            {/* Message content */}
+            {/* Nội dung chính của tin nhắn */}
             <div style={{ whiteSpace: 'pre-wrap' }}>{message.content}</div>
 
-            {/* Edit indicator */}
+            {/* Nếu tin nhắn đã được chỉnh sửa */}
             {message.metadata.is_edited && (
               <Text type="secondary" style={{ fontSize: '10px', fontStyle: 'italic' }}>
                 (đã chỉnh sửa)
               </Text>
             )}
 
-            {/* Attachments */}
+            {/* File đính kèm */}
             {message.attachments && message.attachments.length > 0 && (
               <div style={{ marginTop: '8px' }}>
                 {message.attachments.map((attachment, index) => (
@@ -237,7 +242,7 @@ export default function MessageItem({
               </div>
             )}
 
-            {/* Reactions */}
+            {/* Danh sách reaction hiện tại */}
             {message.reactions && message.reactions.length > 0 && (
               <div
                 style={{
@@ -265,7 +270,7 @@ export default function MessageItem({
               </div>
             )}
 
-            {/* Action buttons */}
+            {/* Nút hành động: reaction + menu */}
             <div
               style={{
                 position: 'absolute',
@@ -291,7 +296,7 @@ export default function MessageItem({
             </div>
           </div>
 
-          {/* Message time and status */}
+          {/* Hiển thị giờ + trạng thái (với tin nhắn của mình) */}
           <div
             style={{
               display: 'flex',
@@ -305,7 +310,7 @@ export default function MessageItem({
             {isOwn && getMessageStatus()}
           </div>
 
-          {/* Reaction picker */}
+          {/* Bảng emoji reaction */}
           {showReactions && (
             <div
               style={{
